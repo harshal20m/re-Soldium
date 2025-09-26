@@ -1,36 +1,195 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# re-Soldium 🛒
 
-## Getting Started
+A modern OLX clone built with Next.js, TypeScript, and Tailwind CSS. Buy and sell everything from electronics to vehicles with confidence.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+-   🔐 **Authentication**: Google OAuth + JWT-based auth system
+-   📱 **Responsive Design**: Mobile-first approach with Tailwind CSS
+-   🎨 **Modern UI**: Clean interface using shadcn/ui components
+-   🔍 **Search & Filter**: Find products by category, price, condition
+-   📸 **Image Upload**: Support for multiple product images
+-   💾 **State Management**: Zustand for efficient state handling
+-   🗄️ **Database**: MongoDB for data persistence
+-   ☁️ **File Storage**: Cloudinary integration for images
+
+## 🚀 Tech Stack
+
+-   **Framework**: Next.js 15 with App Router
+-   **Language**: TypeScript
+-   **Styling**: Tailwind CSS v4
+-   **UI Components**: shadcn/ui
+-   **State Management**: Zustand
+-   **Database**: MongoDB with Mongoose
+-   **Authentication**: JWT + Google OAuth
+-   **File Upload**: Cloudinary
+-   **Icons**: Lucide React
+
+## 🛠️ Setup Instructions
+
+1. **Clone the repository**
+
+    ```bash
+    git clone <your-repo-url>
+    cd re-soldium
+    ```
+
+2. **Install dependencies**
+
+    ```bash
+    npm install
+    ```
+
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory:
+
+    ```env
+    # MongoDB Database
+    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/re-soldium?retryWrites=true&w=majority
+
+    # JWT Authentication
+    JWT_SECRET=your-super-secret-jwt-key-here-make-it-long-and-random
+
+    # NextAuth Configuration
+    NEXTAUTH_URL=http://localhost:3000
+    NEXTAUTH_SECRET=your-nextauth-secret-key-here
+
+    # Google OAuth (Required for Google login functionality)
+    GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+    GOOGLE_CLIENT_SECRET=your-google-client-secret
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+
+    # Cloudinary (for image uploads)
+    CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+    CLOUDINARY_API_KEY=your-cloudinary-api-key
+    CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+
+    # Development/Production Environment
+    NODE_ENV=development
+    ```
+
+4. **Run the development server**
+
+    ```bash
+    npm run dev
+    ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Authentication pages
+│   ├── api/               # API routes
+│   ├── sell/              # Sell page
+│   └── layout.tsx         # Root layout
+├── components/            # Reusable components
+│   ├── ui/               # shadcn/ui components
+│   ├── Header.tsx        # Main navigation
+│   ├── CategorySidebar.tsx
+│   └── ProductCard.tsx
+├── store/                 # Zustand stores
+├── models/               # MongoDB models
+├── utils/                # Utility functions
+└── types/                # TypeScript definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Key Features Implementation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   JWT-based authentication with secure password hashing
+-   Google OAuth integration ready
+-   Protected routes and middleware
 
-## Learn More
+### Product Management
 
-To learn more about Next.js, take a look at the following resources:
+-   Create, read, update, delete products
+-   Image upload with Cloudinary
+-   Category-based organization
+-   Price and condition filtering
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Search & Filtering
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-   Real-time search functionality
+-   Filter by category, price range, condition
+-   Location-based filtering
 
-## Deploy on Vercel
+### State Management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-   Zustand stores for auth and product state
+-   Persistent user sessions
+-   Optimistic UI updates
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎯 Current Status
+
+✅ **Completed:**
+
+-   Project setup and dependencies
+-   Basic UI components and layout
+-   Authentication system (register/login)
+-   Product listing and creation
+-   State management with Zustand
+-   Responsive design
+
+🚧 **Ready for Production:**
+
+-   Database models and API routes created
+-   Image upload system ready for Cloudinary integration
+-   Search and filtering fully implemented
+-   Complete user dashboard with profile, ads, and favorites
+
+📋 **Next Steps:**
+
+-   Add your environment variables to `.env.local`
+-   Connect to MongoDB database
+-   Set up Google OAuth credentials (see setup guide below)
+-   Set up Cloudinary for image uploads
+-   Deploy to Vercel or your preferred platform
+
+## 🔐 **Google OAuth Setup:**
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client IDs"
+5. Set application type to "Web application"
+6. Add authorized redirect URIs:
+    - `http://localhost:3000/api/auth/callback/google` (for development)
+    - `https://yourdomain.com/api/auth/callback/google` (for production)
+7. Copy Client ID and Client Secret to your `.env.local`
+
+## 🚀 Deployment
+
+1. **Build the application**
+
+    ```bash
+    npm run build
+    ```
+
+2. **Deploy to Vercel** (recommended)
+    ```bash
+    vercel --prod
+    ```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+-   [Next.js](https://nextjs.org/) for the amazing React framework
+-   [Tailwind CSS](https://tailwindcss.com/) for utility-first CSS
+-   [shadcn/ui](https://ui.shadcn.com/) for beautiful components
+-   [Zustand](https://github.com/pmndrs/zustand) for state management

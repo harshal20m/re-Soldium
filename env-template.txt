@@ -1,0 +1,24 @@
+# Copy this to .env.local and fill in your actual values
+
+# MongoDB Database
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/re-soldium?retryWrites=true&w=majority
+
+# JWT Authentication
+JWT_SECRET=your-super-secret-jwt-key-here-make-it-long-and-random
+
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret-key-here
+
+# Google OAuth (Get these from Google Cloud Console)
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+
+# Cloudinary (for image uploads)
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+
+# Development/Production Environment
+NODE_ENV=development

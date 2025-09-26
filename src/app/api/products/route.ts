@@ -1,0 +1,147 @@
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/utils/db";
+import Product from "@/models/Product";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-config";
+
+export async function GET(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const category = searchParams.get("category");
+        const minPrice = searchParams.get("minPrice");
+        const maxPrice = searchParams.get("maxPrice");
+        const condition = searchParams.get("condition");
+        const search = searchParams.get("search");
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "12");
+
+        await connectDB();
+
+        // Build query
+        let query: any = { isActive: true };
+
+        if (category) {
+            query.category = category;
+        }
+
+        if (condition) {
+            query.condition = condition;
+        }
+
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = parseFloat(minPrice);
+            if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+        }
+
+        if (search) {
+            query.$text = { $search: search };
+        }
+
+        // Execute query with pagination
+        const skip = (page - 1) * limit;
+        const products = await Product.find(query)
+            .populate("seller", "name email image")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Product.countDocuments(query);
+        const totalPages = Math.ceil(total / limit);
+
+        return NextResponse.json({
+            products,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages,
+                hasMore: page < totalPages,
+            },
+        });
+    } catch (error) {
+        console.error("Products API error:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch products" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function POST(request: NextRequest) {
+    try {
+        // Check authentication using NextAuth
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized - Please log in to create products" },
+                { status: 401 }
+            );
+        }
+
+        const requestData = await request.json();
+
+        const {
+            title,
+            description,
+            price,
+            category,
+            condition,
+            images,
+            location,
+        } = requestData;
+
+        // Validation
+        if (
+            !title ||
+            !description ||
+            !price ||
+            !category ||
+            !condition ||
+            !images ||
+            !location
+        ) {
+            return NextResponse.json(
+                { error: "All fields are required" },
+                { status: 400 }
+            );
+        }
+
+        if (images.length === 0) {
+            return NextResponse.json(
+                { error: "At least one image is required" },
+                { status: 400 }
+            );
+        }
+
+        await connectDB();
+
+        const product = await Product.create({
+            title,
+            description,
+            price: parseFloat(price),
+            category,
+            condition,
+            images,
+            location,
+            seller: session.user.id,
+        });
+
+        const populatedProduct = await Product.findById(product._id).populate(
+            "seller",
+            "name email image"
+        );
+
+        return NextResponse.json({
+            message: "Product created successfully",
+            product: populatedProduct,
+        });
+    } catch (error) {
+        console.error("Create product error:", error);
+        return NextResponse.json(
+            { error: "Failed to create product" },
+            { status: 500 }
+        );
+    }
+}
