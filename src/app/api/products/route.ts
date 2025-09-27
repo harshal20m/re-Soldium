@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import Product from "@/models/Product";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
+
+interface ProductQuery {
+    isActive: boolean;
+    category?: string;
+    condition?: string;
+    price?: {
+        $gte?: number;
+        $lte?: number;
+    };
+    $text?: {
+        $search: string;
+    };
+}
 
 export async function GET(request: NextRequest) {
     try {
@@ -18,7 +31,7 @@ export async function GET(request: NextRequest) {
         await connectDB();
 
         // Build query
-        let query: any = { isActive: true };
+        const query: ProductQuery = { isActive: true };
 
         if (category) {
             query.category = category;
@@ -71,7 +84,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         // Check authentication using NextAuth
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

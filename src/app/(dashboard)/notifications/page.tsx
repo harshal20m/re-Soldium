@@ -17,13 +17,28 @@ import {
     Check,
     CheckCheck,
     Trash2,
-    RefreshCw,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 
+interface NotificationItem {
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    isRead: boolean;
+    data?: Record<string, unknown>;
+    relatedProduct?: {
+        _id: string;
+        title: string;
+        price: number;
+        images: string[];
+    };
+    timestamp: Date;
+}
+
 export default function NotificationsPage() {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const router = useRouter();
     const {
         notifications,
@@ -74,7 +89,7 @@ export default function NotificationsPage() {
         }
     };
 
-    const handleNotificationClick = (notification: any) => {
+    const handleNotificationClick = (notification: NotificationItem) => {
         // Mark as read if not already read
         if (!notification.isRead) {
             markAsRead(notification.id);
@@ -104,7 +119,7 @@ export default function NotificationsPage() {
         try {
             await markAllAsRead();
             toast.success("All notifications marked as read");
-        } catch (error) {
+        } catch {
             toast.error("Failed to mark all as read");
         } finally {
             setLoading(false);
@@ -117,7 +132,7 @@ export default function NotificationsPage() {
             try {
                 clearNotifications();
                 toast.success("All notifications cleared");
-            } catch (error) {
+            } catch {
                 toast.error("Failed to clear notifications");
             } finally {
                 setLoading(false);
@@ -187,7 +202,7 @@ export default function NotificationsPage() {
                                 No notifications yet
                             </h3>
                             <p className="text-gray-600 mb-6">
-                                You'll see notifications here when someone
+                                You&apos;ll see notifications here when someone
                                 messages you, favorites your items, or when
                                 there are updates to your listings.
                             </p>

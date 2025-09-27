@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import Product from "@/models/Product";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
 export async function GET(
@@ -31,10 +31,16 @@ export async function GET(
         return NextResponse.json({
             product: {
                 ...product,
-                _id: product._id.toString(),
+                _id: (product as { _id: string })._id.toString(),
                 seller: {
-                    ...product.seller,
-                    _id: product.seller._id.toString(),
+                    ...(
+                        product as unknown as {
+                            seller: Record<string, unknown>;
+                        }
+                    ).seller,
+                    _id: (
+                        product as unknown as { seller: { _id: string } }
+                    ).seller._id.toString(),
                 },
             },
         });
@@ -52,7 +58,8 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -105,7 +112,8 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

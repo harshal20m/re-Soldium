@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuthStore } from "@/store/authStore";
 import { useProductStore } from "@/store/productStore";
 import NotificationBell from "@/components/NotificationBell";
 import {

@@ -13,7 +13,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
@@ -27,7 +26,6 @@ export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { setUser } = useAuthStore();
     const router = useRouter();
     const [googleLoading, setGoogleLoading] = useState(false);
 

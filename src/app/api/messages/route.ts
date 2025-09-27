@@ -3,12 +3,13 @@ import connectDB from "@/utils/db";
 import Message from "@/models/Message";
 import Conversation from "@/models/Conversation";
 import Notification from "@/models/Notification";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
 export async function GET(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -64,7 +65,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useCallback,
+} from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -17,7 +23,7 @@ interface Notification {
     message: string;
     timestamp: Date;
     isRead: boolean;
-    data?: any;
+    data?: Record<string, unknown>;
     relatedProduct?: {
         _id: string;
         title: string;
@@ -57,8 +63,8 @@ export function NotificationProvider({
     const [unreadCount, setUnreadCount] = useState(0);
 
     // Fetch notifications from API
-    const fetchNotifications = async () => {
-        if (!session?.user?.id) return;
+    const fetchNotifications = useCallback(async () => {
+        if (!session?.user || !("id" in session.user)) return;
 
         try {
             const response = await fetch("/api/notifications");
@@ -70,16 +76,16 @@ export function NotificationProvider({
         } catch (error) {
             console.error("Error fetching notifications:", error);
         }
-    };
+    }, [session?.user]);
 
     // Poll for new notifications every 30 seconds
     useEffect(() => {
-        if (session?.user?.id) {
+        if (session?.user && "id" in session.user) {
             fetchNotifications();
             const interval = setInterval(fetchNotifications, 30000);
             return () => clearInterval(interval);
         }
-    }, [session?.user?.id]);
+    }, [session?.user, fetchNotifications]);
 
     const markAsRead = async (id: string) => {
         try {

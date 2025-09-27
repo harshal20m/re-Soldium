@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import User from "@/models/User";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 import { verifyPassword, hashPassword } from "@/utils/auth";
 
 export async function PUT(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

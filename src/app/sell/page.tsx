@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Header from "@/components/Header";
@@ -11,9 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { CATEGORIES } from "@/types";
 import { toast } from "sonner";
 import { Upload, X, Loader2 } from "lucide-react";
+import Image from "next/image";
 
-export default function SellPage() {
-    const { data: session, status } = useSession();
+function SellPageContent() {
+    const { status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
     const editId = searchParams.get("edit");
@@ -448,11 +449,13 @@ export default function SellPage() {
                                                         key={index}
                                                         className="relative group"
                                                     >
-                                                        <img
+                                                        <Image
                                                             src={image}
                                                             alt={`Product ${
                                                                 index + 1
                                                             }`}
+                                                            width={96}
+                                                            height={96}
                                                             className="w-full h-24 object-cover rounded-lg border"
                                                         />
                                                         <button
@@ -490,9 +493,11 @@ export default function SellPage() {
                                 <CardContent className="space-y-4">
                                     <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
                                         {images[0] ? (
-                                            <img
+                                            <Image
                                                 src={images[0]}
                                                 alt="Main product"
+                                                width={400}
+                                                height={400}
                                                 className="w-full h-full object-cover rounded-lg"
                                             />
                                         ) : (
@@ -559,5 +564,13 @@ export default function SellPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function SellPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <SellPageContent />
+        </Suspense>
     );
 }

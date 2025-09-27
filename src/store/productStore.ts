@@ -15,7 +15,7 @@ interface ProductState {
     removeProduct: (id: string) => void;
 }
 
-export const useProductStore = create<ProductState>((set, get) => ({
+export const useProductStore = create<ProductState>((set) => ({
     products: [],
     filters: {},
     isLoading: false,

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 import Notification from "@/models/Notification";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
 
         // Convert to the format expected by the frontend
         const formattedNotifications = notifications.map((notification) => ({
-            id: notification._id.toString(),
+            id: (notification as { _id: string })._id.toString(),
             type: notification.type,
             title: notification.title,
             message: notification.message,
@@ -58,7 +59,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

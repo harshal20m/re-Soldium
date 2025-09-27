@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { X, Send, MessageCircle, Phone, MapPin, Eye } from "lucide-react";
 import Image from "next/image";
@@ -79,17 +78,7 @@ export default function ChatModal({
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    useEffect(() => {
-        if (isOpen && currentConversationId) {
-            fetchMessages();
-        }
-    }, [isOpen, currentConversationId]);
-
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         if (!currentConversationId) return;
 
         setLoading(true);
@@ -109,7 +98,17 @@ export default function ChatModal({
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentConversationId]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    useEffect(() => {
+        if (isOpen && currentConversationId) {
+            fetchMessages();
+        }
+    }, [isOpen, currentConversationId, fetchMessages]);
 
     const createConversation = async () => {
         try {
@@ -150,7 +149,7 @@ export default function ChatModal({
         if (!newMessage.trim()) return;
 
         // Check if user is logged in
-        if (!session?.user?.id) {
+        if (!session?.user || !("id" in session.user)) {
             toast.error("Please log in to send messages");
             return;
         }
@@ -258,7 +257,10 @@ export default function ChatModal({
                                         key={message._id}
                                         className={`flex ${
                                             message.sender._id ===
-                                            session?.user?.id
+                                            (session?.user &&
+                                            "id" in session.user
+                                                ? session.user.id
+                                                : null)
                                                 ? "justify-end"
                                                 : "justify-start"
                                         }`}
@@ -266,7 +268,10 @@ export default function ChatModal({
                                         <div
                                             className={`max-w-[75%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg ${
                                                 message.sender._id ===
-                                                session?.user?.id
+                                                (session?.user &&
+                                                "id" in session.user
+                                                    ? session.user.id
+                                                    : null)
                                                     ? "bg-blue-600 text-white"
                                                     : "bg-gray-100 text-gray-900"
                                             }`}
@@ -277,7 +282,10 @@ export default function ChatModal({
                                             <p
                                                 className={`text-xs mt-1 ${
                                                     message.sender._id ===
-                                                    session?.user?.id
+                                                    (session?.user &&
+                                                    "id" in session.user
+                                                        ? session.user.id
+                                                        : null)
                                                         ? "text-blue-100"
                                                         : "text-gray-500"
                                                 }`}
@@ -440,7 +448,7 @@ export default function ChatModal({
                                     <ul className="text-sm text-gray-600 space-y-1">
                                         <li>• Meet in a public place</li>
                                         <li>• Check the item before paying</li>
-                                        <li>• Don't pay in advance</li>
+                                        <li>• Don&apos;t pay in advance</li>
                                         <li>• Trust your instincts</li>
                                     </ul>
                                 </CardContent>

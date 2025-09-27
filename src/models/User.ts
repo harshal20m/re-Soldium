@@ -16,7 +16,8 @@ const UserSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: function () {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            required: function (this: any) {
                 return !this.googleId; // Password required only if not using Google auth
             },
         },

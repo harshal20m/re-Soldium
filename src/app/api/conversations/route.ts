@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import Conversation from "@/models/Conversation";
 import Message from "@/models/Message";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = (await getServerSession(authOptions)) as any;
 
-        if (!session?.user?.id) {
+        if (!session?.user || !("id" in session.user)) {
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
@@ -33,7 +34,9 @@ export async function GET(request: NextRequest) {
         const conversationsWithUnread = await Promise.all(
             conversations.map(async (conversation) => {
                 const unreadCount = await Message.countDocuments({
-                    conversationId: conversation._id.toString(),
+                    conversationId: (
+                        conversation as { _id: string }
+                    )._id.toString(),
                     receiver: session.user.id,
                     isRead: false,
                 });
@@ -59,9 +62,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = (await getServerSession(authOptions)) as any;
 
-        if (!session?.user?.id) {
+        if (!session?.user || !("id" in session.user)) {
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
@@ -122,9 +126,14 @@ export async function POST(request: NextRequest) {
                 conversation,
                 message: "Conversation created successfully",
             });
-        } catch (createError: any) {
+        } catch (createError: unknown) {
             // Handle duplicate key error
-            if (createError.code === 11000) {
+            if (
+                createError &&
+                typeof createError === "object" &&
+                "code" in createError &&
+                createError.code === 11000
+            ) {
                 // Try to find the existing conversation again using conversation key
                 const existingConv = await Conversation.findOne({
                     conversationKey: conversationKey,

@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import Product from "@/models/Product";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -25,10 +26,10 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
             products: products.map((product) => ({
                 ...product,
-                _id: product._id.toString(),
+                _id: (product as { _id: string })._id.toString(),
                 seller: {
                     ...product.seller,
-                    _id: product.seller._id.toString(),
+                    _id: (product.seller as { _id: string })._id.toString(),
                 },
             })),
         });

@@ -161,8 +161,8 @@ export default function ProductDetailPage() {
                         Product Not Found
                     </h1>
                     <p className="text-gray-600 mb-6">
-                        The product you're looking for doesn't exist or has been
-                        removed.
+                        The product you&apos;re looking for doesn&apos;t exist
+                        or has been removed.
                     </p>
                     <Button asChild>
                         <Link href="/">Back to Home</Link>
@@ -209,7 +209,11 @@ export default function ProductDetailPage() {
             return;
         }
 
-        if (session?.user?.id === product?.seller._id) {
+        if (
+            session?.user &&
+            "id" in session.user &&
+            session.user.id === product?.seller._id
+        ) {
             toast.error("You cannot message yourself");
             return;
         }
@@ -423,7 +427,7 @@ export default function ProductDetailPage() {
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <p className="text-sm text-blue-600 font-medium">
-                                                    Seller's Phone Number
+                                                    Seller&apos;s Phone Number
                                                 </p>
                                                 <p className="text-lg font-mono text-blue-900">
                                                     {product?.seller?.phone ||
@@ -450,7 +454,8 @@ export default function ProductDetailPage() {
                                             </Button>
                                         </div>
                                         <p className="text-xs text-blue-600 mt-2">
-                                            💡 Tap "Call Now" to dial directly
+                                            💡 Tap &quot;Call Now&quot; to dial
+                                            directly
                                         </p>
                                     </div>
                                 )}
@@ -500,7 +505,7 @@ export default function ProductDetailPage() {
                                 <ul className="text-sm text-gray-600 space-y-2">
                                     <li>• Meet in a public place</li>
                                     <li>• Check the item before paying</li>
-                                    <li>• Don't pay in advance</li>
+                                    <li>• Don&apos;t pay in advance</li>
                                     <li>• Trust your instincts</li>
                                 </ul>
                                 <Button

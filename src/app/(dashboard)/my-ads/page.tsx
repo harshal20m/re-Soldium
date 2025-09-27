@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Header from "@/components/Header";
@@ -11,7 +11,6 @@ import { Product } from "@/types";
 import { formatPrice, formatDate } from "@/utils/auth";
 import {
     Eye,
-    Heart,
     MapPin,
     Edit,
     Trash2,
@@ -120,7 +119,7 @@ export default function MyAdsPage() {
         }
     }, [session, status, router]);
 
-    const fetchUserProducts = async (isRefresh = false) => {
+    const fetchUserProducts = useCallback(async (isRefresh = false) => {
         // Only fetch if user is authenticated
         if (status !== "authenticated" || !session?.user) {
             return;
@@ -163,11 +162,11 @@ export default function MyAdsPage() {
             setLoading(false);
             setRefreshing(false);
         }
-    };
+    }, [status, session?.user]);
 
     useEffect(() => {
         fetchUserProducts();
-    }, [session, status]);
+    }, [session, status, fetchUserProducts]);
 
     // Auto-refresh every 30 seconds
     useEffect(() => {
@@ -178,7 +177,7 @@ export default function MyAdsPage() {
 
             return () => clearInterval(interval);
         }
-    }, [session, status]);
+    }, [session, status, fetchUserProducts]);
 
     const handleToggleActive = async (productId: string) => {
         try {

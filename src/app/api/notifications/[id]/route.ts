@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 import Notification from "@/models/Notification";
 
@@ -9,7 +9,8 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -60,7 +61,8 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -74,7 +76,8 @@ export async function DELETE(
 
         await connectDB();
 
-        // In a real app, you'd delete the notification from the database
+        // Delete the notification from the database
+        await Notification.findByIdAndDelete(id);
 
         return NextResponse.json({
             message: "Notification deleted successfully",

@@ -25,9 +25,9 @@ export default function TermsPage() {
                         </CardHeader>
                         <CardContent>
                             <p className="text-gray-600">
-                                By accessing and using re-Soldium ("the
-                                Service"), you accept and agree to be bound by
-                                the terms and provision of this agreement. If
+                                By accessing and using re-Soldium (&quot;the
+                                Service&quot;), you accept and agree to be bound
+                                by the terms and provision of this agreement. If
                                 you do not agree to abide by the above, please
                                 do not use this service.
                             </p>
@@ -229,8 +229,8 @@ export default function TermsPage() {
                                 <p className="text-gray-600">
                                     We strive to provide reliable service, but
                                     we cannot guarantee uninterrupted access.
-                                    The service is provided "as is" without
-                                    warranties of any kind.
+                                    The service is provided &quot;as is&quot;
+                                    without warranties of any kind.
                                 </p>
                             </div>
                             <div>

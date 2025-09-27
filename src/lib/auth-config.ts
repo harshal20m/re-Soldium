@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/User";
 import { verifyPassword } from "@/utils/auth";
 import connectDB from "@/utils/db";
-
 export const authOptions = {
     providers: [
         // Only include Google provider if credentials are available
@@ -62,7 +61,18 @@ export const authOptions = {
         strategy: "jwt" as const,
     },
     callbacks: {
-        async jwt({ token, user, account }) {
+        async jwt({
+            token,
+            user,
+            account,
+        }: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            token: any;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            user: any;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            account: any;
+        }) {
             if (user) {
                 token.id = user.id;
             }
@@ -104,13 +114,14 @@ export const authOptions = {
 
             return token;
         },
-        async session({ session, token }) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async session({ session, token }: { session: any; token: any }) {
             if (token) {
                 session.user.id = token.id as string;
             }
             return session;
         },
-        async redirect({ url, baseUrl }) {
+        async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
             // Allows relative callback URLs
             if (url.startsWith("/")) return `${baseUrl}${url}`;
             // Allows callback URLs on the same origin

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import User from "@/models/User";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -50,7 +51,8 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -64,7 +66,7 @@ export async function PUT(request: NextRequest) {
 
         await connectDB();
 
-        const updateData: any = {};
+        const updateData: Record<string, string | number | boolean> = {};
         if (name) updateData.name = name;
         if (email) updateData.email = email;
         if (phone !== undefined) updateData.phone = phone;
@@ -108,9 +110,10 @@ export async function PUT(request: NextRequest) {
     }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
     try {
-        const session = await getServerSession(authOptions);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const session = await getServerSession(authOptions) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

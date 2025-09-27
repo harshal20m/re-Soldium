@@ -6,21 +6,15 @@ import { useSession } from "next-auth/react";
 import Header from "@/components/Header";
 import ChatModal from "@/components/ChatModal";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import {
-    MessageCircle,
-    Search,
-    Phone,
-    MapPin,
-    Eye,
-    Calendar,
-} from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import Image from "next/image";
-import { formatPrice, formatDate } from "@/utils/auth";
+import { formatPrice } from "@/utils/auth";
+import Link from "next/link";
 
 interface Conversation {
     _id: string;
@@ -96,7 +90,10 @@ export default function MessagesPage() {
 
     const getOtherParticipant = (conversation: Conversation) => {
         return conversation.participants.find(
-            (participant) => participant._id !== session?.user?.id
+            (participant) =>
+                session?.user &&
+                "id" in session.user &&
+                participant._id !== session.user.id
         );
     };
 
@@ -185,7 +182,7 @@ export default function MessagesPage() {
                             </p>
                             {!searchTerm && (
                                 <Button asChild>
-                                    <a href="/">Browse Listings</a>
+                                    <Link href="/">Browse Listings</Link>
                                 </Button>
                             )}
                         </CardContent>
@@ -197,7 +194,9 @@ export default function MessagesPage() {
                                 getOtherParticipant(conversation);
                             const isLastMessageFromOther =
                                 conversation.lastMessage?.sender._id !==
-                                session?.user?.id;
+                                (session?.user && "id" in session.user
+                                    ? session.user.id
+                                    : null);
 
                             return (
                                 <Card

@@ -14,10 +14,10 @@ export default function AuthProvider({
 
     // Handle NextAuth session changes
     useEffect(() => {
-        if (status === "authenticated" && session?.user) {
+        if (status === "authenticated" && session?.user && "id" in session.user) {
             // Store user data from NextAuth session
             const userData = {
-                _id: session.user.id,
+                id: session.user.id as string,
                 name: session.user.name || "",
                 email: session.user.email || "",
                 image: session.user.image || "",

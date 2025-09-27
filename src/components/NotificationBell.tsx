@@ -11,7 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bell, MessageCircle, Heart, Eye, Settings } from "lucide-react";
+import { Bell, MessageCircle, Heart, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export default function NotificationBell() {
@@ -32,7 +32,18 @@ export default function NotificationBell() {
         }
     };
 
-    const handleNotificationClick = (notification: any) => {
+    const handleNotificationClick = (notification: {
+        id: string;
+        type: string;
+        isRead: boolean;
+        data?: Record<string, unknown>;
+        relatedProduct?: {
+            _id: string;
+            title: string;
+            price: number;
+            images: string[];
+        };
+    }) => {
         // Mark as read if not already read
         if (!notification.isRead) {
             markAsRead(notification.id);

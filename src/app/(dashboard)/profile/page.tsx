@@ -126,7 +126,11 @@ export default function ProfilePage() {
     // Fetch profile data
     useEffect(() => {
         const fetchProfileData = async () => {
-            if (status !== "authenticated" || !session?.user?.id) {
+            if (
+                status !== "authenticated" ||
+                !session?.user ||
+                !("id" in session.user)
+            ) {
                 return;
             }
 

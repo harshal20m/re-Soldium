@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Header from "@/components/Header";
 import CategorySidebar from "@/components/CategorySidebar";
 import ProductCard from "@/components/ProductCard";
@@ -21,8 +21,8 @@ export default function Home() {
     const { data: session } = useSession();
 
     // Fetch user's favorites
-    const fetchFavorites = async () => {
-        if (!session?.user?.id) return;
+    const fetchFavorites = useCallback(async () => {
+        if (!session?.user || !("id" in session.user)) return;
 
         try {
             const response = await fetch("/api/favorites");
@@ -32,15 +32,15 @@ export default function Home() {
                 // The API returns { favorites: products[] } where products are Product objects directly
                 const favoriteIds = new Set<string>(
                     data.favorites
-                        .filter((product: any) => product && product._id) // Filter out invalid entries
-                        .map((product: any) => product._id)
+                        .filter((product: Product) => product && product._id) // Filter out invalid entries
+                        .map((product: Product) => product._id)
                 );
                 setFavoriteProductIds(favoriteIds);
             }
         } catch (error) {
             console.error("Error fetching favorites:", error);
         }
-    };
+    }, [session?.user]);
 
     // Handle favorite toggle
     const handleFavoriteToggle = (productId: string, isFavorited: boolean) => {
@@ -82,7 +82,7 @@ export default function Home() {
     // Fetch favorites when session changes
     useEffect(() => {
         fetchFavorites();
-    }, [session?.user?.id]);
+    }, [session?.user, fetchFavorites]);
 
     useEffect(() => {
         let filtered = products;
@@ -125,7 +125,7 @@ export default function Home() {
             <div className="flex flex-col lg:flex-row">
                 <CategorySidebar />
 
-                <main className="flex-1 p-4 lg:p-6">
+                <main className="flex-1 p-4 lg:p-6 pt-20 lg:pt-6">
                     {/* Hero Section */}
                     <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 rounded-2xl p-6 lg:p-12 mb-8 text-white overflow-hidden">
                         {/* Background Pattern */}
@@ -135,7 +135,8 @@ export default function Home() {
 
                         <div className="relative max-w-4xl">
                             <h1 className="text-3xl lg:text-5xl font-bold mb-4 lg:mb-6 leading-tight">
-                                Find Everything You Need on{" "}
+                                Find Everything You Need on
+                                <br />
                                 <span className="text-yellow-300">
                                     re-Soldium
                                 </span>
@@ -155,16 +156,6 @@ export default function Home() {
                                     <Link href="/sell">
                                         <Plus className="mr-2 h-5 w-5" />
                                         Start Selling
-                                    </Link>
-                                </Button>
-                                <Button
-                                    asChild
-                                    size="lg"
-                                    variant="outline"
-                                    className="text-white border-white hover:bg-white hover:text-blue-600 shadow-lg"
-                                >
-                                    <Link href="/browse">
-                                        Browse Categories
                                     </Link>
                                 </Button>
                             </div>

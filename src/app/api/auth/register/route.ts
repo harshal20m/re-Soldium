@@ -7,9 +7,10 @@ export async function POST(request: NextRequest) {
     try {
         const { name, email, password } = await request.json();
 
+        // Validation
         if (!name || !email || !password) {
             return NextResponse.json(
-                { error: "Name, email, and password are required" },
+                { error: "All fields are required" },
                 { status: 400 }
             );
         }
@@ -24,10 +25,7 @@ export async function POST(request: NextRequest) {
         await connectDB();
 
         // Check if user already exists
-        const existingUser = await User.findOne({
-            email: email.toLowerCase(),
-        });
-
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return NextResponse.json(
                 { error: "User already exists with this email" },
@@ -35,29 +33,26 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Hash password
+        // Hash password and create user
         const hashedPassword = await hashPassword(password);
-
-        // Create new user
         const user = await User.create({
             name,
-            email: email.toLowerCase(),
+            email,
             password: hashedPassword,
         });
 
+        // Return user without password
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _password, ...userWithoutPassword } = user.toObject();
+
         return NextResponse.json({
-            message: "User registered successfully",
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                image: user.image,
-            },
+            message: "User created successfully",
+            user: userWithoutPassword,
         });
     } catch (error) {
         console.error("Registration error:", error);
         return NextResponse.json(
-            { error: "Failed to register user" },
+            { error: "Failed to create user" },
             { status: 500 }
         );
     }

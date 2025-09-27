@@ -19,8 +19,8 @@ export default function AboutPage() {
                     </h1>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                         Your trusted marketplace for buying and selling quality
-                        items. We're building a community where great deals meet
-                        great people.
+                        items. We&apos;re building a community where great deals
+                        meet great people.
                     </p>
                 </div>
 
@@ -83,7 +83,7 @@ export default function AboutPage() {
                                 Fast & Easy
                             </h3>
                             <p className="text-gray-600 text-sm">
-                                List items in minutes and find what you're
+                                List items in minutes and find what you&apos;re
                                 looking for quickly.
                             </p>
                         </CardContent>
@@ -149,8 +149,8 @@ export default function AboutPage() {
                                     Mobile-First Approach
                                 </h4>
                                 <p className="text-gray-600 text-sm">
-                                    Optimized for mobile devices because that's
-                                    how most people shop today.
+                                    Optimized for mobile devices because
+                                    that&apos;s how most people shop today.
                                 </p>
                             </div>
                             <div>
@@ -272,8 +272,8 @@ export default function AboutPage() {
                     <CardContent>
                         <div className="text-center space-y-4">
                             <p className="text-gray-600">
-                                Have questions, feedback, or suggestions? We'd
-                                love to hear from you!
+                                Have questions, feedback, or suggestions?
+                                We&apos;d love to hear from you!
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Button asChild>

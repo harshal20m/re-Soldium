@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, formatDate } from "@/utils/auth";
-import { Heart, MapPin, Eye } from "lucide-react";
+import { Heart, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -143,48 +143,27 @@ export default function ProductCard({
                             }`}
                         />
                     </Button>
-
-                    {/* Condition Badge */}
-                    <Badge
-                        variant={
-                            product.condition === "new"
-                                ? "default"
-                                : "secondary"
-                        }
-                        className="absolute top-2 left-2 capitalize"
-                    >
-                        {product.condition}
-                    </Badge>
                 </div>
 
                 <CardContent className="p-3 lg:p-4">
-                    <div className="space-y-2">
+                    <div className="space-y-3">
+                        {/* Title */}
                         <h3 className="font-semibold text-base lg:text-lg line-clamp-2 text-gray-900 group-hover:text-blue-600 transition-colors">
                             {product.title}
                         </h3>
 
+                        {/* Price */}
                         <p className="text-xl lg:text-2xl font-bold text-green-600">
                             {formatPrice(product.price)}
                         </p>
 
-                        <p className="text-xs lg:text-sm text-gray-600 line-clamp-2 hidden sm:block">
-                            {product.description}
-                        </p>
-
-                        <div className="flex items-center justify-between text-xs lg:text-sm text-gray-500">
-                            <div className="flex items-center min-w-0 flex-1">
-                                <MapPin className="w-3 h-3 lg:w-4 lg:h-4 mr-1 flex-shrink-0" />
-                                <span className="truncate">
-                                    {product.location}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center ml-2">
-                                <Eye className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
-                                <span>{product.views || 0}</span>
-                            </div>
+                        {/* Location */}
+                        <div className="flex items-center text-sm text-gray-600">
+                            <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+                            <span className="truncate">{product.location}</span>
                         </div>
 
+                        {/* Category and Date */}
                         <div className="flex items-center justify-between">
                             <Badge variant="outline" className="text-xs">
                                 {product.category}
@@ -192,18 +171,6 @@ export default function ProductCard({
 
                             <span className="text-xs text-gray-500">
                                 {formatDate(product.createdAt)}
-                            </span>
-                        </div>
-
-                        {/* Seller Info */}
-                        <div className="flex items-center pt-2 border-t border-gray-100">
-                            <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gray-300 rounded-full flex items-center justify-center text-xs lg:text-sm font-medium">
-                                {product.seller?.name
-                                    ?.charAt(0)
-                                    .toUpperCase() || "U"}
-                            </div>
-                            <span className="ml-2 text-xs lg:text-sm text-gray-600 truncate">
-                                {product.seller?.name || "Unknown Seller"}
                             </span>
                         </div>
                     </div>
