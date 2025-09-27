@@ -100,7 +100,12 @@ export default function NotificationsPage() {
             notification.data?.conversationId ||
             notification.type === "message"
         ) {
-            router.push("/messages");
+            const conversationId = notification.data?.conversationId;
+            if (conversationId) {
+                router.push(`/messages?conversationId=${conversationId}`);
+            } else {
+                router.push("/messages");
+            }
         } else if (
             notification.data?.productId ||
             notification.relatedProduct?._id

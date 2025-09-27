@@ -71,6 +71,7 @@ export default function ProfilePage() {
         location: "",
         bio: "",
         website: "",
+        image: session?.user?.image || "",
     });
     const [passwordData, setPasswordData] = useState({
         currentPassword: "",
@@ -119,6 +120,7 @@ export default function ProfilePage() {
                 location: "",
                 bio: "",
                 website: "",
+                image: session.user.image || "",
             });
         }
     }, [session]);
@@ -273,15 +275,26 @@ export default function ProfilePage() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    toast.success("Profile picture updated!");
+
                     // Update profile with new image URL
-                    await fetch("/api/profile", {
+                    const updateResponse = await fetch("/api/profile", {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({ image: data.url }),
                     });
+
+                    if (updateResponse.ok) {
+                        // Update local state with new image
+                        setFormData((prev) => ({
+                            ...prev,
+                            image: data.url,
+                        }));
+                        toast.success("Profile picture updated!");
+                    } else {
+                        toast.error("Failed to update profile");
+                    }
                 } else {
                     toast.error("Failed to upload image");
                 }
@@ -379,6 +392,9 @@ export default function ProfilePage() {
                                                     location: "",
                                                     bio: "",
                                                     website: "",
+                                                    image:
+                                                        session?.user?.image ||
+                                                        "",
                                                 });
                                             }
                                             setIsEditing(!isEditing);
@@ -394,11 +410,22 @@ export default function ProfilePage() {
                                     <div className="relative">
                                         <Avatar className="w-24 h-24">
                                             <AvatarImage
-                                                src={session?.user?.image || ""}
-                                                alt={session?.user?.name || ""}
+                                                src={
+                                                    formData.image ||
+                                                    session?.user?.image ||
+                                                    ""
+                                                }
+                                                alt={
+                                                    formData.name ||
+                                                    session?.user?.name ||
+                                                    ""
+                                                }
                                             />
                                             <AvatarFallback className="text-2xl">
-                                                {session?.user?.name
+                                                {(
+                                                    formData.name ||
+                                                    session?.user?.name
+                                                )
                                                     ?.charAt(0)
                                                     .toUpperCase()}
                                             </AvatarFallback>

@@ -14,7 +14,6 @@ import { useSession } from "next-auth/react";
 export default function Home() {
     const { products, setProducts, isLoading, setLoading, filters } =
         useProductStore();
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [favoriteProductIds, setFavoriteProductIds] = useState<Set<string>>(
         new Set()
     );
@@ -59,7 +58,21 @@ export default function Home() {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await fetch("/api/products");
+                // Build query parameters from filters
+                const params = new URLSearchParams();
+                if (filters.category)
+                    params.append("category", filters.category);
+                if (filters.condition)
+                    params.append("condition", filters.condition);
+                if (filters.minPrice !== undefined)
+                    params.append("minPrice", filters.minPrice.toString());
+                if (filters.maxPrice !== undefined)
+                    params.append("maxPrice", filters.maxPrice.toString());
+                if (filters.search) params.append("search", filters.search);
+
+                const response = await fetch(
+                    `/api/products?${params.toString()}`
+                );
                 const data = await response.json();
 
                 if (response.ok) {
@@ -77,46 +90,12 @@ export default function Home() {
         };
 
         fetchProducts();
-    }, [setProducts, setLoading]);
+    }, [setProducts, setLoading, filters]);
 
     // Fetch favorites when session changes
     useEffect(() => {
         fetchFavorites();
     }, [session?.user, fetchFavorites]);
-
-    useEffect(() => {
-        let filtered = products;
-
-        if (filters.category) {
-            filtered = filtered.filter((p) => p.category === filters.category);
-        }
-
-        if (filters.minPrice !== undefined) {
-            filtered = filtered.filter((p) => p.price >= filters.minPrice!);
-        }
-
-        if (filters.maxPrice !== undefined) {
-            filtered = filtered.filter((p) => p.price <= filters.maxPrice!);
-        }
-
-        if (filters.condition) {
-            filtered = filtered.filter(
-                (p) => p.condition === filters.condition
-            );
-        }
-
-        if (filters.search) {
-            const searchTerm = filters.search.toLowerCase();
-            filtered = filtered.filter(
-                (p) =>
-                    p.title.toLowerCase().includes(searchTerm) ||
-                    p.description.toLowerCase().includes(searchTerm) ||
-                    p.category.toLowerCase().includes(searchTerm)
-            );
-        }
-
-        setFilteredProducts(filtered);
-    }, [products, filters]);
 
     return (
         <div className="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -171,7 +150,7 @@ export default function Home() {
                                     : "Latest Products"}
                             </h2>
                             <div className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full shadow-sm">
-                                {filteredProducts.length} products found
+                                {products.length} products found
                             </div>
                         </div>
                     </div>
@@ -185,7 +164,7 @@ export default function Home() {
                                 </span>
                             </div>
                         </div>
-                    ) : filteredProducts.length === 0 ? (
+                    ) : products.length === 0 ? (
                         <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
                             <div className="text-gray-400 mb-4">
                                 <Package className="h-16 w-16 mx-auto mb-4" />
@@ -209,7 +188,7 @@ export default function Home() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                            {filteredProducts.map((product) => (
+                            {products.map((product) => (
                                 <ProductCard
                                     key={product._id}
                                     product={product}

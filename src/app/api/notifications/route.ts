@@ -7,7 +7,7 @@ import Notification from "@/models/Notification";
 export async function GET() {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -60,7 +60,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

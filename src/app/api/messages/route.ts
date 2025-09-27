@@ -9,7 +9,7 @@ import { authOptions } from "@/lib/auth-config";
 export async function GET(request: NextRequest) {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -83,6 +83,14 @@ export async function POST(request: NextRequest) {
                 {
                     error: "Conversation ID, content, and receiver ID are required",
                 },
+                { status: 400 }
+            );
+        }
+
+        // Prevent users from messaging themselves
+        if (receiverId === session.user.id) {
+            return NextResponse.json(
+                { error: "You cannot message yourself" },
                 { status: 400 }
             );
         }

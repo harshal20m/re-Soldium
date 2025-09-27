@@ -25,8 +25,21 @@ export async function GET() {
             isActive: true,
         })
             .populate("participants", "name email image")
-            .populate("product", "title price images")
-            .populate("lastMessage")
+            .populate({
+                path: "product",
+                select: "title price images location views createdAt",
+                populate: {
+                    path: "seller",
+                    select: "name email image phone createdAt",
+                },
+            })
+            .populate({
+                path: "lastMessage",
+                populate: {
+                    path: "sender",
+                    select: "name email image",
+                },
+            })
             .sort({ lastMessageAt: -1 })
             .lean();
 
@@ -78,6 +91,14 @@ export async function POST(request: NextRequest) {
         if (!productId || !receiverId) {
             return NextResponse.json(
                 { error: "Product ID and receiver ID are required" },
+                { status: 400 }
+            );
+        }
+
+        // Prevent users from messaging themselves
+        if (receiverId === session.user.id) {
+            return NextResponse.json(
+                { error: "You cannot message yourself" },
                 { status: 400 }
             );
         }

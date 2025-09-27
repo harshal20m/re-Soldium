@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Header from "@/components/Header";
 import ChatModal from "@/components/ChatModal";
@@ -29,6 +29,17 @@ interface Conversation {
         title: string;
         price: number;
         images: string[];
+        location: string;
+        views: number;
+        createdAt: string;
+        seller: {
+            _id: string;
+            name: string;
+            email: string;
+            image?: string;
+            phone?: string;
+            createdAt: string;
+        };
     };
     lastMessage?: {
         _id: string;
@@ -43,9 +54,10 @@ interface Conversation {
     unreadCount: number;
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -65,6 +77,19 @@ export default function MessagesPage() {
             fetchConversations();
         }
     }, [status]);
+
+    // Handle conversation ID from URL parameters
+    useEffect(() => {
+        const conversationId = searchParams.get("conversationId");
+        if (conversationId && conversations.length > 0) {
+            const conversation = conversations.find(
+                (conv) => conv._id === conversationId
+            );
+            if (conversation) {
+                openChat(conversation);
+            }
+        }
+    }, [searchParams, conversations]);
 
     const fetchConversations = async () => {
         try {
@@ -315,6 +340,10 @@ export default function MessagesPage() {
                     onClose={() => {
                         setIsChatOpen(false);
                         setSelectedConversation(null);
+                        // Clean up URL by removing conversationId parameter
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete("conversationId");
+                        window.history.replaceState({}, "", url.toString());
                         // Refresh conversations to update unread counts
                         fetchConversations();
                     }}
@@ -323,26 +352,30 @@ export default function MessagesPage() {
                         title: selectedConversation.product.title,
                         price: selectedConversation.product.price,
                         images: selectedConversation.product.images,
-                        location: "", // Not available in conversation data
-                        views: 0, // Not available in conversation data
-                        createdAt: new Date().toISOString(),
+                        location: selectedConversation.product.location,
+                        views: selectedConversation.product.views,
+                        createdAt: selectedConversation.product.createdAt,
                     }}
                     seller={{
-                        _id:
-                            getOtherParticipant(selectedConversation)?._id ||
-                            "",
-                        name:
-                            getOtherParticipant(selectedConversation)?.name ||
-                            "",
-                        email:
-                            getOtherParticipant(selectedConversation)?.email ||
-                            "",
-                        image: getOtherParticipant(selectedConversation)?.image,
-                        createdAt: new Date().toISOString(),
+                        _id: selectedConversation.product.seller._id,
+                        name: selectedConversation.product.seller.name,
+                        email: selectedConversation.product.seller.email,
+                        image: selectedConversation.product.seller.image,
+                        phone: selectedConversation.product.seller.phone,
+                        createdAt:
+                            selectedConversation.product.seller.createdAt,
                     }}
                     conversationId={selectedConversation._id}
                 />
             )}
         </div>
+    );
+}
+
+export default function MessagesPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <MessagesContent />
+        </Suspense>
     );
 }

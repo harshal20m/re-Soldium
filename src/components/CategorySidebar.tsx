@@ -200,11 +200,11 @@ export default function CategorySidebar() {
                                     setFilters({
                                         ...filters,
                                         minPrice: 0,
-                                        maxPrice: 100,
+                                        maxPrice: 5000,
                                     })
                                 }
                             >
-                                Under $100
+                                Under ₹5,000
                             </Button>
                             <Button
                                 variant="ghost"
@@ -213,12 +213,12 @@ export default function CategorySidebar() {
                                 onClick={() =>
                                     setFilters({
                                         ...filters,
-                                        minPrice: 100,
-                                        maxPrice: 500,
+                                        minPrice: 5000,
+                                        maxPrice: 25000,
                                     })
                                 }
                             >
-                                $100 - $500
+                                ₹5,000 - ₹25,000
                             </Button>
                             <Button
                                 variant="ghost"
@@ -227,22 +227,22 @@ export default function CategorySidebar() {
                                 onClick={() =>
                                     setFilters({
                                         ...filters,
-                                        minPrice: 500,
-                                        maxPrice: 1000,
+                                        minPrice: 25000,
+                                        maxPrice: 100000,
                                     })
                                 }
                             >
-                                $500 - $1,000
+                                ₹25,000 - ₹1,00,000
                             </Button>
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 className="w-full justify-start text-sm"
                                 onClick={() =>
-                                    setFilters({ ...filters, minPrice: 1000 })
+                                    setFilters({ ...filters, minPrice: 100000 })
                                 }
                             >
-                                Over $1,000
+                                Over ₹1,00,000
                             </Button>
                         </div>
                     </div>

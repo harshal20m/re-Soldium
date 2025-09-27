@@ -30,80 +30,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-// Mock user's products
-const mockUserProducts: Product[] = [
-    {
-        _id: "user-1",
-        title: "iPhone 13 Pro Max 256GB",
-        description:
-            "Excellent condition iPhone with original box and accessories.",
-        price: 899,
-        category: "Electronics",
-        condition: "used",
-        images: [
-            "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=300&fit=crop",
-        ],
-        location: "New York, NY",
-        seller: {
-            _id: "current-user",
-            name: "Current User",
-            email: "user@example.com",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        isActive: true,
-        views: 156,
-        createdAt: new Date("2024-01-15"),
-        updatedAt: new Date(),
-    },
-    {
-        _id: "user-2",
-        title: "Gaming Chair - Like New",
-        description: "Comfortable gaming chair, barely used. Moving sale.",
-        price: 250,
-        category: "Home & Garden",
-        condition: "used",
-        images: [
-            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
-        ],
-        location: "New York, NY",
-        seller: {
-            _id: "current-user",
-            name: "Current User",
-            email: "user@example.com",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        isActive: false,
-        views: 89,
-        createdAt: new Date("2024-01-10"),
-        updatedAt: new Date(),
-    },
-    {
-        _id: "user-3",
-        title: "Mountain Bike - Trek",
-        description: "Well-maintained mountain bike, perfect for trails.",
-        price: 650,
-        category: "Sports",
-        condition: "used",
-        images: [
-            "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
-        ],
-        location: "New York, NY",
-        seller: {
-            _id: "current-user",
-            name: "Current User",
-            email: "user@example.com",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        isActive: true,
-        views: 234,
-        createdAt: new Date("2024-01-08"),
-        updatedAt: new Date(),
-    },
-];
-
 export default function MyAdsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
@@ -119,50 +45,51 @@ export default function MyAdsPage() {
         }
     }, [session, status, router]);
 
-    const fetchUserProducts = useCallback(async (isRefresh = false) => {
-        // Only fetch if user is authenticated
-        if (status !== "authenticated" || !session?.user) {
-            return;
-        }
+    const fetchUserProducts = useCallback(
+        async (isRefresh = false) => {
+            // Only fetch if user is authenticated
+            if (status !== "authenticated" || !session?.user) {
+                return;
+            }
 
-        if (isRefresh) {
-            setRefreshing(true);
-        } else {
-            setLoading(true);
-        }
-
-        try {
-            const response = await fetch("/api/products/my-ads", {
-                cache: "no-store", // Ensure fresh data
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setProducts(data.products || []);
-                setLastUpdated(new Date());
-                if (isRefresh) {
-                    toast.success("Listings refreshed!");
-                }
+            if (isRefresh) {
+                setRefreshing(true);
             } else {
-                console.error("Failed to fetch products:", response.status);
-                // Fallback to mock data if API fails
-                setProducts(mockUserProducts);
+                setLoading(true);
+            }
+
+            try {
+                const response = await fetch("/api/products/my-ads", {
+                    cache: "no-store", // Ensure fresh data
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setProducts(data.products || []);
+                    setLastUpdated(new Date());
+                    if (isRefresh) {
+                        toast.success("Listings refreshed!");
+                    }
+                } else {
+                    console.error("Failed to fetch products:", response.status);
+                    setProducts([]);
+                    if (isRefresh) {
+                        toast.error("Failed to refresh listings");
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching user products:", error);
+                setProducts([]);
                 if (isRefresh) {
                     toast.error("Failed to refresh listings");
                 }
+            } finally {
+                setLoading(false);
+                setRefreshing(false);
             }
-        } catch (error) {
-            console.error("Error fetching user products:", error);
-            // Fallback to mock data if API fails
-            setProducts(mockUserProducts);
-            if (isRefresh) {
-                toast.error("Failed to refresh listings");
-            }
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    }, [status, session?.user]);
+        },
+        [status, session?.user]
+    );
 
     useEffect(() => {
         fetchUserProducts();

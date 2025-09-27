@@ -55,7 +55,12 @@ export default function NotificationBell() {
             notification.data?.conversationId ||
             notification.type === "message"
         ) {
-            window.location.href = `/messages`;
+            const conversationId = notification.data?.conversationId;
+            if (conversationId) {
+                window.location.href = `/messages?conversationId=${conversationId}`;
+            } else {
+                window.location.href = `/messages`;
+            }
         } else if (
             notification.data?.productId ||
             notification.relatedProduct?._id

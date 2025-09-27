@@ -26,52 +26,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
 
-// Mock product data - in real app, fetch from API
-const mockProduct: Product = {
-    _id: "1",
-    title: "iPhone 13 Pro Max 256GB - Excellent Condition",
-    description: `Selling my iPhone 13 Pro Max in excellent condition. The phone has been used with a case and screen protector since day one. No scratches, dents, or any damage.
-
-Features:
-- 256GB Storage
-- ProRAW camera capabilities
-- 5G connectivity
-- Face ID
-- iOS 17 ready
-
-Includes:
-- Original box
-- Lightning cable
-- Wall adapter
-- Screen protector (already applied)
-- Clear case
-
-Battery health is at 89%. Phone has never been dropped or damaged. Selling because I upgraded to iPhone 15.
-
-Serious buyers only. Available for pickup or can meet in safe public location.`,
-    price: 899,
-    category: "Electronics",
-    condition: "used",
-    images: [
-        "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=400&h=300&fit=crop",
-    ],
-    location: "New York, NY",
-    seller: {
-        _id: "1",
-        name: "John Doe",
-        email: "john@example.com",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    },
-    isActive: true,
-    views: 156,
-    createdAt: new Date("2024-01-15"),
-    updatedAt: new Date(),
-};
-
 export default function ProductDetailPage() {
     const params = useParams();
     const router = useRouter();
@@ -123,13 +77,11 @@ export default function ProductDetailPage() {
 
                     setProduct(productData);
                 } else {
-                    // Fallback to mock data if API fails
-                    setProduct(mockProduct);
+                    setProduct(null);
                 }
             } catch (error) {
                 console.error("Error fetching product:", error);
-                // Fallback to mock data if API fails
-                setProduct(mockProduct);
+                setProduct(null);
             } finally {
                 setLoading(false);
             }

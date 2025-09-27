@@ -10,7 +10,7 @@ export async function PUT(
 ) {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -21,7 +21,17 @@ export async function PUT(
 
         const resolvedParams = await params;
         const { id } = resolvedParams;
-        const body = await request.json();
+
+        let body;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json(
+                { error: "Invalid JSON in request body" },
+                { status: 400 }
+            );
+        }
+
         const { isRead } = body;
 
         await connectDB();
@@ -62,7 +72,7 @@ export async function DELETE(
 ) {
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(

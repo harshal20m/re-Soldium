@@ -207,6 +207,36 @@ export default function LoginPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Test User Credentials for Recruiters */}
+            <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm z-50">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                    🧪 Test Accounts for Recruiters
+                </h3>
+                <div className="space-y-2 text-xs">
+                    <div className="bg-gray-50 p-2 rounded">
+                        <p className="font-medium text-gray-700">
+                            Email: rajesh@example.com
+                        </p>
+                        <p className="text-gray-600">Password: password123</p>
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                        <p className="font-medium text-gray-700">
+                            Email: priya@example.com
+                        </p>
+                        <p className="text-gray-600">Password: password123</p>
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                        <p className="font-medium text-gray-700">
+                            Email: amit@example.com
+                        </p>
+                        <p className="text-gray-600">Password: password123</p>
+                    </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                    💡 Click to copy credentials
+                </p>
+            </div>
         </div>
     );
 }

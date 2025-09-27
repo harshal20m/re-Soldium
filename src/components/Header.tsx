@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -24,11 +24,13 @@ import {
     Package,
     MessageCircle,
     Bell,
+    Shield,
 } from "lucide-react";
 
 export default function Header() {
     const { data: session } = useSession();
     const [searchTerm, setSearchTerm] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,6 +38,25 @@ export default function Header() {
             // Update the product store with search term
             const { setFilters, filters } = useProductStore.getState();
             setFilters({ ...filters, search: searchTerm.trim() });
+        }
+    };
+
+    // Check admin status
+    useEffect(() => {
+        if (session?.user) {
+            checkAdminStatus();
+        }
+    }, [session]);
+
+    const checkAdminStatus = async () => {
+        try {
+            const response = await fetch("/api/admin/check-access");
+            if (response.ok) {
+                setIsAdmin(true);
+            }
+        } catch {
+            // User is not admin, which is fine
+            setIsAdmin(false);
         }
     };
 
@@ -189,6 +210,17 @@ export default function Header() {
                                                 Notifications
                                             </Link>
                                         </DropdownMenuItem>
+                                        {isAdmin && (
+                                            <>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem asChild>
+                                                    <Link href="/admin">
+                                                        <Shield className="mr-2 h-4 w-4" />
+                                                        Admin Panel
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                            </>
+                                        )}
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => {
