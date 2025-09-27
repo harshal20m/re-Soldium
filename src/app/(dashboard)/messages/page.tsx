@@ -118,7 +118,8 @@ function MessagesContent() {
             (participant) =>
                 session?.user &&
                 "id" in session.user &&
-                participant._id !== session.user.id
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                participant._id !== (session.user as any).id
         );
     };
 
@@ -334,40 +335,49 @@ function MessagesContent() {
             </div>
 
             {/* Chat Modal */}
-            {selectedConversation && (
-                <ChatModal
-                    isOpen={isChatOpen}
-                    onClose={() => {
-                        setIsChatOpen(false);
-                        setSelectedConversation(null);
-                        // Clean up URL by removing conversationId parameter
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete("conversationId");
-                        window.history.replaceState({}, "", url.toString());
-                        // Refresh conversations to update unread counts
-                        fetchConversations();
-                    }}
-                    product={{
-                        _id: selectedConversation.product._id,
-                        title: selectedConversation.product.title,
-                        price: selectedConversation.product.price,
-                        images: selectedConversation.product.images,
-                        location: selectedConversation.product.location,
-                        views: selectedConversation.product.views,
-                        createdAt: selectedConversation.product.createdAt,
-                    }}
-                    seller={{
-                        _id: selectedConversation.product.seller._id,
-                        name: selectedConversation.product.seller.name,
-                        email: selectedConversation.product.seller.email,
-                        image: selectedConversation.product.seller.image,
-                        phone: selectedConversation.product.seller.phone,
-                        createdAt:
-                            selectedConversation.product.seller.createdAt,
-                    }}
-                    conversationId={selectedConversation._id}
-                />
-            )}
+            {selectedConversation &&
+                (() => {
+                    const otherParticipant =
+                        getOtherParticipant(selectedConversation);
+                    return otherParticipant ? (
+                        <ChatModal
+                            isOpen={isChatOpen}
+                            onClose={() => {
+                                setIsChatOpen(false);
+                                setSelectedConversation(null);
+                                // Clean up URL by removing conversationId parameter
+                                const url = new URL(window.location.href);
+                                url.searchParams.delete("conversationId");
+                                window.history.replaceState(
+                                    {},
+                                    "",
+                                    url.toString()
+                                );
+                                // Refresh conversations to update unread counts
+                                fetchConversations();
+                            }}
+                            product={{
+                                _id: selectedConversation.product._id,
+                                title: selectedConversation.product.title,
+                                price: selectedConversation.product.price,
+                                images: selectedConversation.product.images,
+                                location: selectedConversation.product.location,
+                                views: selectedConversation.product.views,
+                                createdAt:
+                                    selectedConversation.product.createdAt,
+                            }}
+                            seller={{
+                                _id: otherParticipant._id,
+                                name: otherParticipant.name,
+                                email: otherParticipant.email,
+                                image: otherParticipant.image,
+                                phone: "", // Not available in participants data
+                                createdAt: "", // Not available in participants data
+                            }}
+                            conversationId={selectedConversation._id}
+                        />
+                    ) : null;
+                })()}
         </div>
     );
 }

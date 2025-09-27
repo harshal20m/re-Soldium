@@ -144,11 +144,33 @@ export default function Home() {
                     {/* Products Section */}
                     <div className="mb-6">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                                {filters.category
-                                    ? `${filters.category} Products`
-                                    : "Latest Products"}
-                            </h2>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                                    {filters.search
+                                        ? `Search Results for "${filters.search}"`
+                                        : filters.category
+                                        ? `${filters.category} Products`
+                                        : "Latest Products"}
+                                </h2>
+                                {filters.search && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            const { setFilters } =
+                                                useProductStore.getState();
+                                            const {
+                                                search: _,
+                                                ...otherFilters
+                                            } = filters;
+                                            setFilters(otherFilters);
+                                        }}
+                                        className="text-xs"
+                                    >
+                                        Clear Search
+                                    </Button>
+                                )}
+                            </div>
                             <div className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full shadow-sm">
                                 {products.length} products found
                             </div>

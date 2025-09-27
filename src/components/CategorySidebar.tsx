@@ -54,16 +54,25 @@ export default function CategorySidebar() {
     return (
         <>
             {/* Mobile Toggle Button */}
-            <div className="lg:hidden fixed top-20 left-4 z-50">
+            <div className="lg:hidden fixed top-24 left-4 z-50">
                 <Button
                     onClick={() => setIsMobileOpen(!isMobileOpen)}
-                    className="bg-white shadow-lg border border-gray-200 text-black"
+                    className="bg-white border-2 border-blue-400 text-black hover:bg-blue-50 hover:border-blue-500 transition-all duration-200 relative overflow-hidden neon-glow"
+                    style={{
+                        boxShadow:
+                            "0 0 20px #3b82f6, 0 0 40px #3b82f6, 0 0 60px #3b82f6, 0 0 80px #3b82f6",
+                        animation:
+                            "neonPulse 2s ease-in-out infinite alternate",
+                    }}
                     size="sm"
                 >
                     <Filter className="h-4 w-4 mr-2" />
                     Filters
                     {Object.keys(filters).length > 0 && (
-                        <Badge variant="secondary" className="ml-2 text-xs">
+                        <Badge
+                            variant="secondary"
+                            className="ml-2 text-xs bg-blue-100 text-blue-800"
+                        >
                             {Object.keys(filters).length}
                         </Badge>
                     )}
@@ -82,7 +91,7 @@ export default function CategorySidebar() {
             <div
                 className={`w-full lg:w-64 bg-white border-r border-gray-200 h-full ${
                     isMobileOpen
-                        ? "fixed top-0 left-0 z-50 h-screen overflow-y-auto"
+                        ? "fixed top-0 left-0 z-50 h-screen overflow-y-auto shadow-2xl"
                         : "hidden lg:block"
                 }`}
             >
@@ -116,7 +125,7 @@ export default function CategorySidebar() {
                     <div className="space-y-1">
                         <Button
                             variant={!filters.category ? "secondary" : "ghost"}
-                            className="w-full justify-start text-sm lg:text-base"
+                            className="w-full justify-start text-sm lg:text-base border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                             onClick={() => handleCategorySelect("")}
                         >
                             <Grid3X3 className="mr-2 lg:mr-3 h-3 w-3 lg:h-4 lg:w-4" />
@@ -124,7 +133,7 @@ export default function CategorySidebar() {
                         </Button>
 
                         {/* Mobile: Grid layout for categories */}
-                        <div className="lg:hidden grid grid-cols-2 gap-2 mt-3">
+                        <div className="lg:hidden grid grid-cols-2 gap-3 mt-4">
                             {CATEGORIES.map((category) => {
                                 const Icon = categoryIcons[category];
                                 const isSelected =
@@ -136,14 +145,18 @@ export default function CategorySidebar() {
                                         variant={
                                             isSelected ? "secondary" : "ghost"
                                         }
-                                        className="w-full justify-start text-xs p-2 h-auto"
+                                        className={`w-full justify-start text-xs p-3 h-auto border transition-all duration-200 ${
+                                            isSelected
+                                                ? "bg-blue-100 border-blue-300 text-blue-800 shadow-sm"
+                                                : "border-gray-200 hover:border-blue-200 hover:bg-blue-50"
+                                        }`}
                                         onClick={() =>
                                             handleCategorySelect(category)
                                         }
                                     >
-                                        <div className="flex flex-col items-center space-y-1">
-                                            <Icon className="h-4 w-4" />
-                                            <span className="truncate text-center leading-tight">
+                                        <div className="flex flex-col items-center space-y-2">
+                                            <Icon className="h-5 w-5" />
+                                            <span className="truncate text-center leading-tight font-medium">
                                                 {category}
                                             </span>
                                         </div>
@@ -165,7 +178,7 @@ export default function CategorySidebar() {
                                         variant={
                                             isSelected ? "secondary" : "ghost"
                                         }
-                                        className="w-full justify-start"
+                                        className="w-full justify-start border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                         onClick={() =>
                                             handleCategorySelect(category)
                                         }
@@ -195,7 +208,7 @@ export default function CategorySidebar() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full justify-start text-sm"
+                                className="w-full justify-start text-sm border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                 onClick={() =>
                                     setFilters({
                                         ...filters,
@@ -209,7 +222,7 @@ export default function CategorySidebar() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full justify-start text-sm"
+                                className="w-full justify-start text-sm border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                 onClick={() =>
                                     setFilters({
                                         ...filters,
@@ -223,7 +236,7 @@ export default function CategorySidebar() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full justify-start text-sm"
+                                className="w-full justify-start text-sm border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                 onClick={() =>
                                     setFilters({
                                         ...filters,
@@ -237,7 +250,7 @@ export default function CategorySidebar() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full justify-start text-sm"
+                                className="w-full justify-start text-sm border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                 onClick={() =>
                                     setFilters({ ...filters, minPrice: 100000 })
                                 }
@@ -262,7 +275,7 @@ export default function CategorySidebar() {
                                             : "ghost"
                                     }
                                     size="sm"
-                                    className="w-full justify-start text-sm capitalize"
+                                    className="w-full justify-start text-sm capitalize border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                                     onClick={() =>
                                         setFilters({
                                             ...filters,

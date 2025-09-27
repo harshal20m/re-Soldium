@@ -25,12 +25,32 @@ import {
     MessageCircle,
     Bell,
     Shield,
+    X,
 } from "lucide-react";
 
 export default function Header() {
     const { data: session } = useSession();
     const [searchTerm, setSearchTerm] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+    // Popular search suggestions
+    const popularSearches = [
+        "iPhone",
+        "Samsung",
+        "Laptop",
+        "Car",
+        "Bike",
+        "Furniture",
+        "Books",
+        "Clothes",
+        "Shoes",
+        "Electronics",
+        "Home",
+        "Garden",
+    ];
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,7 +58,39 @@ export default function Header() {
             // Update the product store with search term
             const { setFilters, filters } = useProductStore.getState();
             setFilters({ ...filters, search: searchTerm.trim() });
+
+            // Add to recent searches
+            addToRecentSearches(searchTerm.trim());
+
+            // Close mobile search and suggestions
+            setIsMobileSearchOpen(false);
+            setShowSuggestions(false);
         }
+    };
+
+    const addToRecentSearches = (term: string) => {
+        setRecentSearches((prev) => {
+            const filtered = prev.filter((item) => item !== term);
+            const updated = [term, ...filtered].slice(0, 5); // Keep only 5 recent searches
+            localStorage.setItem("recentSearches", JSON.stringify(updated));
+            return updated;
+        });
+    };
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setSearchTerm(suggestion);
+        const { setFilters, filters } = useProductStore.getState();
+        setFilters({ ...filters, search: suggestion });
+        addToRecentSearches(suggestion);
+        setShowSuggestions(false);
+        setIsMobileSearchOpen(false);
+    };
+
+    const clearSearch = () => {
+        setSearchTerm("");
+        const { setFilters, filters } = useProductStore.getState();
+        const { search: _, ...otherFilters } = filters;
+        setFilters(otherFilters);
     };
 
     // Check admin status
@@ -47,6 +99,26 @@ export default function Header() {
             checkAdminStatus();
         }
     }, [session]);
+
+    // Sync search term with current filters
+    useEffect(() => {
+        const { filters } = useProductStore.getState();
+        if (filters.search) {
+            setSearchTerm(filters.search);
+        }
+    }, []);
+
+    // Load recent searches from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem("recentSearches");
+        if (saved) {
+            try {
+                setRecentSearches(JSON.parse(saved));
+            } catch (error) {
+                console.error("Error loading recent searches:", error);
+            }
+        }
+    }, []);
 
     const checkAdminStatus = async () => {
         try {
@@ -88,9 +160,86 @@ export default function Header() {
                                 type="text"
                                 placeholder="Search for products..."
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 w-full"
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setShowSuggestions(
+                                        e.target.value.length > 0
+                                    );
+                                }}
+                                onFocus={() => setShowSuggestions(true)}
+                                onBlur={() =>
+                                    setTimeout(
+                                        () => setShowSuggestions(false),
+                                        200
+                                    )
+                                }
+                                className="pl-10 pr-10 py-2 w-full"
                             />
+                            {searchTerm && (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+                                    onClick={clearSearch}
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            )}
+
+                            {/* Search Suggestions Dropdown */}
+                            {showSuggestions && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+                                    {recentSearches.length > 0 && (
+                                        <div className="p-2">
+                                            <div className="text-xs font-medium text-gray-500 px-2 py-1">
+                                                Recent Searches
+                                            </div>
+                                            {recentSearches.map(
+                                                (search, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() =>
+                                                            handleSuggestionClick(
+                                                                search
+                                                            )
+                                                        }
+                                                        className="w-full text-left px-2 py-2 hover:bg-gray-50 rounded text-sm flex items-center gap-2"
+                                                    >
+                                                        <Search className="w-4 h-4 text-gray-400" />
+                                                        {search}
+                                                    </button>
+                                                )
+                                            )}
+                                        </div>
+                                    )}
+                                    {recentSearches.length > 0 &&
+                                        popularSearches.length > 0 && (
+                                            <div className="border-t border-gray-100"></div>
+                                        )}
+                                    <div className="p-2">
+                                        <div className="text-xs font-medium text-gray-500 px-2 py-1">
+                                            Popular Searches
+                                        </div>
+                                        {popularSearches.map(
+                                            (search, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() =>
+                                                        handleSuggestionClick(
+                                                            search
+                                                        )
+                                                    }
+                                                    className="w-full text-left px-2 py-2 hover:bg-gray-50 rounded text-sm flex items-center gap-2"
+                                                >
+                                                    <Search className="w-4 h-4 text-gray-400" />
+                                                    {search}
+                                                </button>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </form>
 
@@ -100,16 +249,10 @@ export default function Header() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="md:hidden p-2"
-                            onClick={() => {
-                                // TODO: Open mobile search modal
-                                const searchInput = document.querySelector(
-                                    'input[type="text"]'
-                                ) as HTMLInputElement;
-                                if (searchInput) {
-                                    searchInput.focus();
-                                }
-                            }}
+                            className="md:hidden p-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+                            onClick={() =>
+                                setIsMobileSearchOpen(!isMobileSearchOpen)
+                            }
                         >
                             <Search className="h-5 w-5" />
                         </Button>
@@ -250,6 +393,112 @@ export default function Header() {
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Search Overlay */}
+            {isMobileSearchOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                    onClick={() => setIsMobileSearchOpen(false)}
+                />
+            )}
+
+            {/* Mobile Search Form */}
+            {isMobileSearchOpen && (
+                <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 shadow-xl">
+                    <div className="px-4 py-3">
+                        <form
+                            onSubmit={handleSearch}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="relative">
+                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                <Input
+                                    type="text"
+                                    placeholder="Search for products..."
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                        setShowSuggestions(
+                                            e.target.value.length > 0
+                                        );
+                                    }}
+                                    onFocus={() => setShowSuggestions(true)}
+                                    className="pl-12 pr-12 py-3 w-full text-base bg-gray-50 border-0 focus:bg-white focus:ring-2 focus:ring-blue-500 rounded-xl transition-all duration-200"
+                                    autoFocus
+                                    autoComplete="off"
+                                    autoCapitalize="off"
+                                    autoCorrect="off"
+                                    spellCheck="false"
+                                />
+                                {searchTerm && (
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-200 rounded-full transition-colors"
+                                        onClick={clearSearch}
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                )}
+                            </div>
+                        </form>
+
+                        {/* Mobile Search Suggestions */}
+                        {showSuggestions && (
+                            <div className="mt-2 max-h-60 overflow-y-auto">
+                                {recentSearches.length > 0 && (
+                                    <div className="mb-2">
+                                        <div className="text-xs font-medium text-gray-500 px-2 py-1">
+                                            Recent Searches
+                                        </div>
+                                        {recentSearches.map((search, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() =>
+                                                    handleSuggestionClick(
+                                                        search
+                                                    )
+                                                }
+                                                className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg text-sm flex items-center gap-3"
+                                            >
+                                                <Search className="w-4 h-4 text-gray-400" />
+                                                {search}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                                {recentSearches.length > 0 &&
+                                    popularSearches.length > 0 && (
+                                        <div className="border-t border-gray-100 my-2"></div>
+                                    )}
+                                <div>
+                                    <div className="text-xs font-medium text-gray-500 px-2 py-1">
+                                        Popular Searches
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 p-2">
+                                        {popularSearches.map(
+                                            (search, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() =>
+                                                        handleSuggestionClick(
+                                                            search
+                                                        )
+                                                    }
+                                                    className="px-3 py-1 bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-full text-sm transition-colors"
+                                                >
+                                                    {search}
+                                                </button>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </header>
     );
 }

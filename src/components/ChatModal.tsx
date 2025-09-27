@@ -111,6 +111,13 @@ export default function ChatModal({
     }, [isOpen, currentConversationId, fetchMessages]);
 
     const createConversation = async () => {
+        // Prevent users from messaging themselves
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (seller._id === (session?.user as any)?.id) {
+            toast.error("You cannot message yourself");
+            return null;
+        }
+
         try {
             const response = await fetch("/api/conversations", {
                 method: "POST",
@@ -151,6 +158,13 @@ export default function ChatModal({
         // Check if user is logged in
         if (!session?.user || !("id" in session.user)) {
             toast.error("Please log in to send messages");
+            return;
+        }
+
+        // Prevent users from messaging themselves
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (seller._id === (session.user as any).id) {
+            toast.error("You cannot message yourself");
             return;
         }
 
