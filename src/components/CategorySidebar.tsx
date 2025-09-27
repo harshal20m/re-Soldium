@@ -57,7 +57,7 @@ export default function CategorySidebar() {
             <div className="lg:hidden fixed top-20 left-4 z-50">
                 <Button
                     onClick={() => setIsMobileOpen(!isMobileOpen)}
-                    className="bg-white shadow-lg border border-gray-200"
+                    className="bg-white shadow-lg border border-gray-200 text-black"
                     size="sm"
                 >
                     <Filter className="h-4 w-4 mr-2" />
