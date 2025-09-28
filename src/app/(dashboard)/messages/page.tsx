@@ -296,24 +296,31 @@ function MessagesContent() {
 
                                                 {/* Participant Info */}
                                                 <div className="flex items-center space-x-2">
-                                                    <Avatar className="w-6 h-6">
-                                                        <AvatarImage
-                                                            src={
-                                                                otherParticipant?.image
-                                                            }
-                                                            alt={
-                                                                otherParticipant?.name
-                                                            }
-                                                        />
-                                                        <AvatarFallback className="text-xs">
-                                                            {otherParticipant?.name
-                                                                ?.charAt(0)
-                                                                .toUpperCase()}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <span className="text-xs text-gray-500">
+                                                    <Link
+                                                        href={`/profile/${otherParticipant?._id}`}
+                                                    >
+                                                        <Avatar className="w-6 h-6 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all duration-200">
+                                                            <AvatarImage
+                                                                src={
+                                                                    otherParticipant?.image
+                                                                }
+                                                                alt={
+                                                                    otherParticipant?.name
+                                                                }
+                                                            />
+                                                            <AvatarFallback className="text-xs">
+                                                                {otherParticipant?.name
+                                                                    ?.charAt(0)
+                                                                    .toUpperCase()}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                    </Link>
+                                                    <Link
+                                                        href={`/profile/${otherParticipant?._id}`}
+                                                        className="text-xs text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
+                                                    >
                                                         {otherParticipant?.name}
-                                                    </span>
+                                                    </Link>
                                                 </div>
 
                                                 {/* Last Message Time */}

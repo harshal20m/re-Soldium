@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { X, Send, MessageCircle, Phone, MapPin, Eye } from "lucide-react";
 import Image from "next/image";
 import { formatPrice, formatDate } from "@/utils/auth";
+import Link from "next/link";
 
 interface Message {
     _id: string;
@@ -373,21 +374,26 @@ export default function ChatModal({
                                         Seller Information
                                     </h4>
                                     <div className="flex items-center space-x-3 mb-3">
-                                        <Avatar className="w-10 h-10">
-                                            <AvatarImage
-                                                src={seller.image}
-                                                alt={seller.name}
-                                            />
-                                            <AvatarFallback>
-                                                {seller.name
-                                                    .charAt(0)
-                                                    .toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
+                                        <Link href={`/profile/${seller._id}`}>
+                                            <Avatar className="w-10 h-10 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all duration-200">
+                                                <AvatarImage
+                                                    src={seller.image}
+                                                    alt={seller.name}
+                                                />
+                                                <AvatarFallback>
+                                                    {seller.name
+                                                        .charAt(0)
+                                                        .toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        </Link>
                                         <div>
-                                            <p className="font-medium text-gray-900">
+                                            <Link
+                                                href={`/profile/${seller._id}`}
+                                                className="font-medium text-gray-900 hover:text-blue-600 transition-colors cursor-pointer"
+                                            >
                                                 {seller.name}
-                                            </p>
+                                            </Link>
                                             <p className="text-sm text-gray-600">
                                                 Member since{" "}
                                                 {formatDate(seller.createdAt)}
