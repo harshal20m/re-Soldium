@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -142,13 +142,6 @@ export default function Header() {
         setFilters(otherFilters);
     };
 
-    // Check admin status
-    useEffect(() => {
-        if (session?.user) {
-            checkAdminStatus();
-        }
-    }, [session]);
-
     // Sync search term with current filters
     useEffect(() => {
         const { filters } = useProductStore.getState();
@@ -169,17 +162,42 @@ export default function Header() {
         }
     }, []);
 
-    const checkAdminStatus = async () => {
+    const checkAdminStatus = useCallback(async () => {
+        // Only check admin status for authenticated users
+        if (!session?.user?.email) {
+            setIsAdmin(false);
+            return;
+        }
+
         try {
-            const response = await fetch("/api/admin/check-access");
+            const response = await fetch("/api/admin/check-access", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
             if (response.ok) {
-                setIsAdmin(true);
+                const data = await response.json();
+                setIsAdmin(data.isAdmin === true);
+            } else {
+                // User is not admin or access denied
+                setIsAdmin(false);
             }
         } catch {
-            // User is not admin, which is fine
+            // User is not admin or network error
             setIsAdmin(false);
         }
-    };
+    }, [session?.user?.email]);
+    // Check admin status only for authenticated users
+    useEffect(() => {
+        if (session?.user && session.user.email) {
+            checkAdminStatus();
+        } else {
+            // Reset admin status when user logs out
+            setIsAdmin(false);
+        }
+    }, [session, checkAdminStatus]);
 
     return (
         <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm animate-slide-in-down">

@@ -983,25 +983,6 @@ export default function ProfilePage() {
 
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
-                                        <div className="bg-green-100 p-2 rounded-lg">
-                                            <Star className="w-5 h-5 text-green-600" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900">
-                                                Rating
-                                            </p>
-                                            <p className="text-sm text-gray-600">
-                                                From buyers
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <span className="text-2xl font-bold text-gray-900">
-                                        {stats.rating.toFixed(1)}
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-3">
                                         <div className="bg-red-100 p-2 rounded-lg">
                                             <Heart className="w-5 h-5 text-red-600" />
                                         </div>

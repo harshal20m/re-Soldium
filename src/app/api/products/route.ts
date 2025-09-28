@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/utils/db";
 import Product from "@/models/Product";
+import Report from "@/models/Report";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-config";
 
@@ -14,6 +15,9 @@ interface ProductQuery {
     };
     $text?: {
         $search: string;
+    };
+    _id?: {
+        $nin: string[];
     };
 }
 
@@ -126,6 +130,20 @@ export async function GET(request: NextRequest) {
             } else {
                 // Otherwise, use text search (works with or without category filter)
                 query.$text = { $search: search };
+            }
+        }
+
+        // Get session to check for reported products
+        const session = await getServerSession(authOptions);
+
+        // If user is logged in, exclude products they have reported
+        if (session?.user?.id) {
+            const reportedProductIds = await Report.find({
+                reporter: session.user.id,
+            }).distinct("reportedProduct");
+
+            if (reportedProductIds.length > 0) {
+                query._id = { $nin: reportedProductIds };
             }
         }
 

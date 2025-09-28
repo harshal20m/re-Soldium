@@ -20,17 +20,21 @@ export async function GET() {
 
         const user = await User.findById(session.user.id).select("role");
 
-        if (!user || (user.role !== "admin" && user.role !== "super_admin")) {
+        if (!user) {
             return NextResponse.json(
-                { error: "Forbidden - Admin access required" },
-                { status: 403 }
+                { error: "User not found" },
+                { status: 404 }
             );
         }
 
+        // Check if user is admin or super_admin
+        const isAdmin = user.role === "admin" || user.role === "super_admin";
+
         return NextResponse.json({
             success: true,
+            isAdmin,
             role: user.role,
-            message: "Admin access granted",
+            message: isAdmin ? "Admin access granted" : "User access confirmed",
         });
     } catch (error) {
         console.error("Admin access check error:", error);

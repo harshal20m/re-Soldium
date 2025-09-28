@@ -16,6 +16,7 @@ import {
     TrendingUp,
     AlertTriangle,
     CheckCircle,
+    Flag,
 } from "lucide-react";
 
 interface AdminStats {
@@ -348,6 +349,15 @@ export default function AdminDashboard() {
                                 >
                                     <TrendingUp className="h-4 w-4 mr-2" />
                                     View Analytics
+                                </Button>
+                                <Button
+                                    onClick={() =>
+                                        router.push("/admin/reports")
+                                    }
+                                    variant="outline"
+                                >
+                                    <Flag className="h-4 w-4 mr-2" />
+                                    Manage Reports
                                 </Button>
                             </div>
                         </CardContent>

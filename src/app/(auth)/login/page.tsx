@@ -74,26 +74,34 @@ export default function LoginPage() {
         }
     };
 
+    const handleTestUserClick = (email: string, password: string) => {
+        setFormData({
+            email,
+            password,
+        });
+        toast.success("Test credentials filled! Click 'Sign In' to login.");
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <div className="flex items-center justify-center mb-4">
+            <Card className="w-full max-w-md animate-fade-in-up">
+                <CardHeader className="text-center animate-fade-in animate-delay-200">
+                    <div className="flex items-center justify-center mb-4 animate-bounce-in">
                         <div className="bg-blue-600 text-white p-3 rounded-lg font-bold text-2xl">
                             rS
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">
+                    <CardTitle className="text-2xl font-bold animate-fade-in-up animate-delay-300">
                         Welcome back
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="animate-fade-in-up animate-delay-400">
                         Sign in to your re-Soldium account
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
+                        <div className="animate-fade-in-up animate-delay-500">
                             <Input
                                 type="email"
                                 name="email"
@@ -102,10 +110,11 @@ export default function LoginPage() {
                                 onChange={handleChange}
                                 required
                                 disabled={isLoading}
+                                className="transition-all duration-200 focus:scale-105"
                             />
                         </div>
 
-                        <div className="relative">
+                        <div className="relative animate-fade-in-up animate-delay-600">
                             <Input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
@@ -114,7 +123,7 @@ export default function LoginPage() {
                                 onChange={handleChange}
                                 required
                                 disabled={isLoading}
-                                className="pr-10"
+                                className="pr-10 transition-all duration-200 focus:scale-105"
                             />
                             <button
                                 type="button"
@@ -132,7 +141,7 @@ export default function LoginPage() {
 
                         <Button
                             type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700"
+                            className="w-full bg-blue-600 hover:bg-blue-700 animate-fade-in-up animate-delay-700 hover-scale"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -146,12 +155,12 @@ export default function LoginPage() {
                         </Button>
                     </form>
 
-                    <div className="mt-6 text-center">
+                    <div className="mt-6 text-center animate-fade-in-up animate-delay-800">
                         <p className="text-sm text-gray-600">
                             Don&apos;t have an account?{" "}
                             <Link
                                 href="/register"
-                                className="text-blue-600 hover:underline font-medium"
+                                className="text-blue-600 hover:underline font-medium hover-scale"
                             >
                                 Sign up
                             </Link>
@@ -173,7 +182,7 @@ export default function LoginPage() {
                         <Button
                             type="button"
                             variant="outline"
-                            className="w-full mt-4"
+                            className="w-full mt-4 animate-fade-in-up animate-delay-900 hover-scale"
                             disabled={isLoading || googleLoading}
                             onClick={handleGoogleSignIn}
                         >
@@ -209,32 +218,28 @@ export default function LoginPage() {
             </Card>
 
             {/* Test User Credentials for Recruiters */}
-            <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm z-50">
+            <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm z-50 animate-fade-in-up">
                 <h3 className="text-sm font-semibold text-gray-900 mb-2">
                     🧪 Test Accounts for Recruiters
                 </h3>
                 <div className="space-y-2 text-xs">
-                    <div className="bg-gray-50 p-2 rounded">
+                    <div
+                        className="bg-gray-50 p-2 rounded cursor-pointer hover:bg-blue-50 hover:border-blue-200 border border-transparent transition-all duration-200 hover-scale"
+                        onClick={() =>
+                            handleTestUserClick(
+                                "rajesh@example.com",
+                                "password123"
+                            )
+                        }
+                    >
                         <p className="font-medium text-gray-700">
                             Email: rajesh@example.com
                         </p>
                         <p className="text-gray-600">Password: password123</p>
                     </div>
-                    <div className="bg-gray-50 p-2 rounded">
-                        <p className="font-medium text-gray-700">
-                            Email: priya@example.com
-                        </p>
-                        <p className="text-gray-600">Password: password123</p>
-                    </div>
-                    <div className="bg-gray-50 p-2 rounded">
-                        <p className="font-medium text-gray-700">
-                            Email: amit@example.com
-                        </p>
-                        <p className="text-gray-600">Password: password123</p>
-                    </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                    💡 Click to copy credentials
+                    💡 Click to auto-fill credentials
                 </p>
             </div>
         </div>

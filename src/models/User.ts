@@ -88,6 +88,27 @@ const UserSchema = new mongoose.Schema(
                 default: true,
             },
         },
+        warnings: {
+            count: {
+                type: Number,
+                default: 0,
+                min: 0,
+                max: 3,
+            },
+            lastWarningDate: {
+                type: Date,
+            },
+            isSuspended: {
+                type: Boolean,
+                default: false,
+            },
+            suspensionReason: {
+                type: String,
+            },
+            suspensionEndDate: {
+                type: Date,
+            },
+        },
     },
     {
         timestamps: true,

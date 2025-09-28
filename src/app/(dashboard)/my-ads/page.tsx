@@ -268,9 +268,6 @@ export default function MyAdsPage() {
                             <span className="hidden sm:inline">
                                 {refreshing ? "Refreshing..." : "Refresh"}
                             </span>
-                            <span className="sm:hidden">
-                                {refreshing ? "..." : "↻"}
-                            </span>
                         </Button>
                         <Button
                             asChild

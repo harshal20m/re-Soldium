@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import ReportButton from "@/components/ReportButton";
 
 export default function ProductDetailPage() {
     const params = useParams();
@@ -327,6 +328,12 @@ export default function ProductDetailPage() {
                                         >
                                             <Share2 className="w-5 h-5" />
                                         </Button>
+                                        <ReportButton
+                                            productId={product._id}
+                                            productTitle={product.title}
+                                            sellerId={product.seller._id}
+                                            className="p-2 text-gray-600 hover:text-red-600"
+                                        />
                                     </div>
                                 </div>
 

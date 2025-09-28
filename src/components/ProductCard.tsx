@@ -126,23 +126,26 @@ export default function ProductCard({
                         </div>
                     )}
 
-                    {/* Like Button */}
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`absolute top-2 right-2 p-2 rounded-full ${
-                            isLiked
-                                ? "bg-red-100 text-red-600 hover:bg-red-200"
-                                : "bg-white/80 hover:bg-white"
-                        }`}
-                        onClick={handleToggleFavorite}
-                    >
-                        <Heart
-                            className={`w-4 h-4 transition-all duration-200 hover-scale ${
-                                isLiked ? "fill-current" : ""
+                    {/* Action Buttons */}
+                    <div className="absolute top-2 right-2 flex gap-1">
+                        {/* Like Button */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`p-2 rounded-full ${
+                                isLiked
+                                    ? "bg-red-100 text-red-600 hover:bg-red-200"
+                                    : "bg-white/80 hover:bg-white"
                             }`}
-                        />
-                    </Button>
+                            onClick={handleToggleFavorite}
+                        >
+                            <Heart
+                                className={`w-4 h-4 transition-all duration-200 hover-scale ${
+                                    isLiked ? "fill-current" : ""
+                                }`}
+                            />
+                        </Button>
+                    </div>
                 </div>
 
                 <CardContent className="p-3 lg:p-4">
