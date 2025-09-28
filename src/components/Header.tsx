@@ -38,18 +38,67 @@ export default function Header() {
 
     // Popular search suggestions
     const popularSearches = [
+        // Electronics & Tech
         "iPhone",
         "Samsung",
         "Laptop",
+        "Mobile phones",
+        "Tablet",
+        "Headphones",
+        "Camera",
+        "Smartwatch",
+        // Vehicles
         "Car",
         "Bike",
+        "Motorcycle",
+        "Scooter",
+        "Bicycle",
+        "Auto rickshaw",
+        // Home & Furniture
         "Furniture",
-        "Books",
+        "Sofa",
+        "Bed",
+        "Table",
+        "Chair",
+        "Wardrobe",
+        "Home decor",
+        // Fashion & Accessories
         "Clothes",
         "Shoes",
+        "Bag",
+        "Watch",
+        "Jewelry",
+        "Sunglasses",
+        "Perfume",
+        // Books & Education
+        "Books",
+        "Textbooks",
+        "Novels",
+        "Study materials",
+        "Stationery",
+        // Sports & Fitness
+        "Gym equipment",
+        "Sports shoes",
+        "Cricket bat",
+        "Football",
+        "Badminton racket",
+        // Pets & Animals
+        "Pet food",
+        "Dog accessories",
+        "Cat toys",
+        "Aquarium",
+        // Jobs & Services
+        "Part time job",
+        "Freelance",
+        "Tutoring",
+        "Cleaning service",
+        "Repair service",
+        // General Categories
         "Electronics",
         "Home",
         "Garden",
+        "Kitchen appliances",
+        "Tools",
     ];
 
     const handleSearch = (e: React.FormEvent) => {

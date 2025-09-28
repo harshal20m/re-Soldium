@@ -76,7 +76,7 @@ const ProductSchema = new mongoose.Schema(
 );
 
 // Index for better search performance
-ProductSchema.index({ title: "text", description: "text" });
+ProductSchema.index({ title: "text", description: "text", category: "text" });
 ProductSchema.index({ category: 1, isActive: 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ createdAt: -1 });

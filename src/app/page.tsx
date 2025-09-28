@@ -60,10 +60,24 @@ export default function Home() {
             try {
                 // Build query parameters from filters
                 const params = new URLSearchParams();
-                if (filters.category)
-                    params.append("category", filters.category);
-                if (filters.condition)
-                    params.append("condition", filters.condition);
+                if (filters.category) {
+                    if (Array.isArray(filters.category)) {
+                        filters.category.forEach((cat) =>
+                            params.append("category", cat)
+                        );
+                    } else {
+                        params.append("category", filters.category);
+                    }
+                }
+                if (filters.condition) {
+                    if (Array.isArray(filters.condition)) {
+                        filters.condition.forEach((cond) =>
+                            params.append("condition", cond)
+                        );
+                    } else {
+                        params.append("condition", filters.condition);
+                    }
+                }
                 if (filters.minPrice !== undefined)
                     params.append("minPrice", filters.minPrice.toString());
                 if (filters.maxPrice !== undefined)

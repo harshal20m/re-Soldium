@@ -383,7 +383,7 @@ export default function ProductDetailPage() {
                                                 </p>
                                                 <p className="text-lg font-mono text-blue-900">
                                                     {product?.seller?.phone ||
-                                                        "+1 (555) 123-4567"}
+                                                        "+91 9876543210"}
                                                 </p>
                                             </div>
                                             <Button
@@ -440,8 +440,16 @@ export default function ProductDetailPage() {
                                                 )}
                                             </p>
                                         </div>
-                                        <Button variant="ghost" size="sm">
-                                            View Profile
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            asChild
+                                        >
+                                            <Link
+                                                href={`/profile/${product.seller._id}`}
+                                            >
+                                                View Profile
+                                            </Link>
                                         </Button>
                                     </div>
                                 </div>

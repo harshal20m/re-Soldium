@@ -427,7 +427,7 @@ export default function ChatModal({
                                                     </p>
                                                     <p className="text-sm font-mono text-blue-900">
                                                         {seller.phone ||
-                                                            "+1 (555) 123-4567"}
+                                                            "+91 9876543210"}
                                                     </p>
                                                 </div>
                                                 <Button

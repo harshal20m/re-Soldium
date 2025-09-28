@@ -33,10 +33,10 @@ export interface AuthUser {
 }
 
 export interface ProductFilters {
-    category?: string;
+    category?: string | string[]; // Support both single and multiple categories
     minPrice?: number;
     maxPrice?: number;
-    condition?: string;
+    condition?: string | string[]; // Support both single and multiple conditions
     location?: string;
     search?: string;
 }

@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
         // Build query
         const query: ProductQuery = { isActive: true };
 
+        // Handle category filter
         if (category) {
             query.category = category;
         }
@@ -48,7 +49,84 @@ export async function GET(request: NextRequest) {
         }
 
         if (search) {
-            query.$text = { $search: search };
+            // Enhanced search with category mapping
+            const searchTerms = search.toLowerCase().trim();
+
+            // Map common search terms to categories
+            const categoryMappings: { [key: string]: string } = {
+                car: "Vehicles",
+                cars: "Vehicles",
+                vehicle: "Vehicles",
+                vehicles: "Vehicles",
+                bike: "Vehicles",
+                bikes: "Vehicles",
+                motorcycle: "Vehicles",
+                scooter: "Vehicles",
+                bicycle: "Vehicles",
+                auto: "Vehicles",
+                mobile: "Electronics",
+                "mobile phone": "Electronics",
+                "mobile phones": "Electronics",
+                phone: "Electronics",
+                phones: "Electronics",
+                smartphone: "Electronics",
+                laptop: "Electronics",
+                computer: "Electronics",
+                tablet: "Electronics",
+                headphones: "Electronics",
+                camera: "Electronics",
+                watch: "Electronics",
+                smartwatch: "Electronics",
+                furniture: "Home & Garden",
+                sofa: "Home & Garden",
+                bed: "Home & Garden",
+                table: "Home & Garden",
+                chair: "Home & Garden",
+                wardrobe: "Home & Garden",
+                home: "Home & Garden",
+                garden: "Home & Garden",
+                clothes: "Fashion",
+                clothing: "Fashion",
+                shoes: "Fashion",
+                bag: "Fashion",
+                jewelry: "Fashion",
+                sunglasses: "Fashion",
+                perfume: "Fashion",
+                books: "Books",
+                book: "Books",
+                textbook: "Books",
+                novel: "Books",
+                study: "Books",
+                sports: "Sports",
+                gym: "Sports",
+                cricket: "Sports",
+                football: "Sports",
+                badminton: "Sports",
+                pet: "Pets",
+                pets: "Pets",
+                dog: "Pets",
+                cat: "Pets",
+                aquarium: "Pets",
+                job: "Jobs",
+                jobs: "Jobs",
+                freelance: "Jobs",
+                tutoring: "Jobs",
+                service: "Services",
+                services: "Services",
+                repair: "Services",
+                cleaning: "Services",
+            };
+
+            // Check if search term maps to a category
+            const mappedCategory = categoryMappings[searchTerms];
+
+            if (mappedCategory && !category) {
+                // If search term maps to a category and no category filter is set, use the mapped category
+                query.category = mappedCategory;
+            } else {
+                // Otherwise, use text search (works with or without category filter)
+                query.$text = { $search: search };
+            }
         }
 
         // Execute query with pagination
@@ -85,7 +163,7 @@ export async function POST(request: NextRequest) {
     try {
         // Check authentication using NextAuth
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const session = await getServerSession(authOptions) as any;
+        const session = (await getServerSession(authOptions)) as any;
 
         if (!session?.user?.id) {
             return NextResponse.json(
