@@ -88,7 +88,7 @@ export default function ProductCard({
     };
 
     return (
-        <Card className="group hover:shadow-lg transition-all duration-200 overflow-hidden bg-white">
+        <Card className="group hover:shadow-lg transition-all duration-200 overflow-hidden bg-white hover-lift">
             <Link href={`/product/${product._id}`}>
                 <div className="relative aspect-[4/3] overflow-hidden">
                     {!imageError && product.images?.[0] ? (
@@ -138,7 +138,7 @@ export default function ProductCard({
                         onClick={handleToggleFavorite}
                     >
                         <Heart
-                            className={`w-4 h-4 ${
+                            className={`w-4 h-4 transition-all duration-200 hover-scale ${
                                 isLiked ? "fill-current" : ""
                             }`}
                         />

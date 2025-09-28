@@ -157,9 +157,9 @@ export default function Home() {
 
                     {/* Products Section */}
                     <div className="mb-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 animate-fade-in-left">
                                     {filters.search
                                         ? `Search Results for "${filters.search}"`
                                         : filters.category
@@ -179,7 +179,7 @@ export default function Home() {
                                             } = filters;
                                             setFilters(otherFilters);
                                         }}
-                                        className="text-xs"
+                                        className="text-xs animate-fade-in-right hover-scale"
                                     >
                                         Clear Search
                                     </Button>
@@ -192,7 +192,7 @@ export default function Home() {
                     </div>
 
                     {isLoading ? (
-                        <div className="flex items-center justify-center py-12">
+                        <div className="flex items-center justify-center py-12 animate-fade-in">
                             <div className="text-center">
                                 <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
                                 <span className="text-gray-600">
@@ -201,20 +201,20 @@ export default function Home() {
                             </div>
                         </div>
                     ) : products.length === 0 ? (
-                        <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
+                        <div className="text-center py-12 bg-white rounded-2xl shadow-sm animate-fade-in-up">
                             <div className="text-gray-400 mb-4">
-                                <Package className="h-16 w-16 mx-auto mb-4" />
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                <Package className="h-16 w-16 mx-auto mb-4 animate-float" />
+                                <h3 className="text-lg font-medium text-gray-900 mb-2 animate-fade-in">
                                     No products found
                                 </h3>
-                                <p className="text-gray-600 max-w-md mx-auto">
+                                <p className="text-gray-600 max-w-md mx-auto animate-fade-in animate-delay-200">
                                     Try adjusting your filters or check back
                                     later for new listings.
                                 </p>
                             </div>
                             <Button
                                 asChild
-                                className="mt-4 bg-blue-600 hover:bg-blue-700"
+                                className="mt-4 bg-blue-600 hover:bg-blue-700 animate-bounce-in animate-delay-300"
                             >
                                 <Link href="/sell">
                                     <Plus className="mr-2 h-4 w-4" />
@@ -224,15 +224,23 @@ export default function Home() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                            {products.map((product) => (
-                                <ProductCard
+                            {products.map((product, index) => (
+                                <div
                                     key={product._id}
-                                    product={product}
-                                    isFavorited={favoriteProductIds.has(
-                                        product._id
-                                    )}
-                                    onFavoriteToggle={handleFavoriteToggle}
-                                />
+                                    className="animate-fade-in-up hover-lift"
+                                    style={{
+                                        animationDelay: `${index * 0.1}s`,
+                                        animationFillMode: 'both'
+                                    }}
+                                >
+                                    <ProductCard
+                                        product={product}
+                                        isFavorited={favoriteProductIds.has(
+                                            product._id
+                                        )}
+                                        onFavoriteToggle={handleFavoriteToggle}
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}

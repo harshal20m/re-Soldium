@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CATEGORIES } from "@/types";
 import { toast } from "sonner";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, IndianRupee } from "lucide-react";
 import Image from "next/image";
 
 function SellPageContent() {
@@ -512,7 +512,8 @@ function SellPageContent() {
                                             {formData.title || "Product Title"}
                                         </h3>
                                         <p className="text-2xl font-bold text-green-600">
-                                            ${formData.price || "0.00"}
+                                            <IndianRupee />
+                                            {formData.price || "0.00"}
                                         </p>
                                         <p className="text-sm text-gray-600 mt-2">
                                             {formData.description ||

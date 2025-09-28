@@ -177,9 +177,9 @@ export default function ProductDetailPage() {
         <div className="min-h-screen bg-gray-50">
             <Header />
 
-            <div className="max-w-6xl mx-auto p-6">
+            <div className="max-w-6xl mx-auto p-6 animate-fade-in">
                 {/* Breadcrumb */}
-                <nav className="mb-6">
+                <nav className="mb-6 animate-fade-in-up">
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Link href="/" className="hover:text-blue-600">
                             Home

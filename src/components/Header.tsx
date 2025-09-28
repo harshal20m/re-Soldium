@@ -182,13 +182,13 @@ export default function Header() {
     };
 
     return (
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm animate-slide-in-down">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link
                         href="/"
-                        className="flex items-center space-x-2 flex-shrink-0"
+                        className="flex items-center space-x-2 flex-shrink-0 animate-fade-in-left hover-scale"
                     >
                         <div className="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">
                             rS
@@ -201,7 +201,7 @@ export default function Header() {
                     {/* Search Bar - Hidden on mobile, shown on tablet+ */}
                     <form
                         onSubmit={handleSearch}
-                        className="hidden md:flex flex-1 max-w-lg mx-8"
+                        className="hidden md:flex flex-1 max-w-lg mx-8 animate-fade-in animate-delay-200"
                     >
                         <div className="relative w-full">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -238,7 +238,7 @@ export default function Header() {
 
                             {/* Search Suggestions Dropdown */}
                             {showSuggestions && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto animate-fade-in-up">
                                     {recentSearches.length > 0 && (
                                         <div className="p-2">
                                             <div className="text-xs font-medium text-gray-500 px-2 py-1">
@@ -298,7 +298,7 @@ export default function Header() {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="md:hidden p-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
+                            className="md:hidden p-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 animate-fade-in-right hover-scale"
                             onClick={() =>
                                 setIsMobileSearchOpen(!isMobileSearchOpen)
                             }
@@ -312,7 +312,7 @@ export default function Header() {
                                     asChild
                                     variant="default"
                                     size="sm"
-                                    className="bg-blue-600 hover:bg-blue-700 hidden sm:flex"
+                                    className="bg-blue-600 hover:bg-blue-700 hidden sm:flex animate-fade-in-right animate-delay-300 hover-scale"
                                 >
                                     <Link href="/sell">
                                         <Plus className="w-4 h-4 mr-2" />

@@ -106,10 +106,10 @@ export default function CategorySidebar() {
     return (
         <>
             {/* Mobile Toggle Button */}
-            <div className="lg:hidden fixed top-24 left-4 z-50">
+            <div className="lg:hidden fixed top-24 left-4 z-50 animate-fade-in-left">
                 <Button
                     onClick={() => setIsMobileOpen(!isMobileOpen)}
-                    className="bg-white border-2 border-blue-400 text-black hover:bg-blue-50 hover:border-blue-500 transition-all duration-200 relative overflow-hidden neon-glow"
+                    className="bg-white border-2 border-blue-400 text-black hover:bg-blue-50 hover:border-blue-500 transition-all duration-200 relative overflow-hidden neon-glow hover-scale"
                     style={{
                         boxShadow:
                             "0 0 20px #3b82f6, 0 0 40px #3b82f6, 0 0 60px #3b82f6, 0 0 80px #3b82f6",
